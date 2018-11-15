@@ -32,23 +32,22 @@ struct SqList {  //顺序表（顺序结构）的定义
 };
 
 /*-----page 19 on textbook ---------*/
-status InitList(SqList& L);
-status DestroyList(SqList& L);
-status ClearList(SqList& L);
-bool ListEmpty(SqList L);
-size_t ListLength(SqList L);
-status GetElem(SqList L, size_t i, ElemType& e);
-size_t LocateElem(SqList L, ElemType e);
-status PriorElem(SqList L, ElemType cur, ElemType& pre_e);
-status NextElem(SqList L, ElemType cur, ElemType& next_e);
-status ListInsert(SqList& L, size_t i, ElemType e);
-status ListDelete(SqList& L, size_t i, ElemType& e);
-status ListTraverse(SqList L);  //简化过
-
+status InitList(SqList&);
+status DestroyList(SqList&);
+status ClearList(SqList&);
+bool ListEmpty(SqList);
+size_t ListLength(SqList);
+status GetElem(SqList, size_t i, ElemType& e);
+size_t LocateElem(SqList, ElemType e);
+status PriorElem(SqList, ElemType cur, ElemType& pre_e);
+status NextElem(SqList, ElemType cur, ElemType& next_e);
+status ListInsert(SqList&, size_t i, ElemType e);
+status ListDelete(SqList&, size_t i, ElemType& e);
+status ListTraverse(SqList);  //简化过
 /*--------------------------------------------*/
 int main(void) {
-  SqList L;
-  vector<SqList> Lists = {L};
+  int i = 0;
+  vector<SqList> Lists = {SqList()};
   int op = 1;
   while (op) {
     system("cls");
@@ -72,7 +71,7 @@ int main(void) {
     switch (op) {
       case 1:
         //printf("\n----InitList功能待实现！\n");
-        if (InitList(L) == OK)
+        if (InitList(Lists[i]) == OK)
           printf("线性表创建成功！\n");
         else
           printf("线性表创建失败！\n");
@@ -80,27 +79,27 @@ int main(void) {
         getchar();
         break;
       case 2:
-        DestroyList(L);
+        DestroyList(Lists[i]);
         getchar();
         getchar();
         break;
       case 3:
-        ClearList(L);
+        ClearList(Lists[i]);
         getchar();
         getchar();
         break;
       case 4:
-        printf("列表是否为空：%s", ListEmpty(L) ? "是" : "否");
+        printf("列表是否为空：%s", ListEmpty(Lists[i]) ? "是" : "否");
         getchar();
         getchar();
         break;
       case 5:
-        printf("列表长度：%d", ListLength(L));
+        printf("列表长度：%d", ListLength(Lists[i]));
         getchar();
         getchar();
         break;
       case 6: {
-        if (ListEmpty(L)) {
+        if (ListEmpty(Lists[i])) {
           printf("列表为空！");
           getchar();
           getchar();
@@ -110,7 +109,7 @@ int main(void) {
         printf("输入 index：\n");
         scanf("%u", &i);
         ElemType e;
-        GetElem(L, i, e);
+        GetElem(Lists[i], i, e);
         printf("值：%d", e);
         getchar();
         getchar();
@@ -119,7 +118,7 @@ int main(void) {
       case 7: {
         ElemType e;
         scanf("%d", &e);
-        printf("值：%d", LocateElem(L, e));
+        printf("值：%d", LocateElem(Lists[i], e));
         getchar();
         getchar();
         break;
@@ -129,7 +128,7 @@ int main(void) {
         ElemType p_e;
         printf("输入值：");
         scanf("%d", &e);
-        PriorElem(L, e, p_e);
+        PriorElem(Lists[i], e, p_e);
         printf("前驱：%d", p_e);
         getchar();
         getchar();
@@ -140,7 +139,7 @@ int main(void) {
         ElemType n_e;
         printf("输入值：");
         scanf("%d", &e);
-        NextElem(L, e, n_e);
+        NextElem(Lists[i], e, n_e);
         printf("后继：%d", n_e);
         getchar();
         getchar();
@@ -151,7 +150,7 @@ int main(void) {
         size_t i;
         printf("先后输入 index 和 item：\n");
         while (scanf("%u", &i) && scanf("%d", &e)) {
-          if (ListInsert(L, i, e))
+          if (ListInsert(Lists[i], i, e))
             printf("成功在%d插入%d\n", i, e);
           printf("先后输入 index 和 item：\n");
         }
@@ -164,7 +163,7 @@ int main(void) {
         printf("输入 index：\n");
         while (scanf("%u", &i)) {
           ElemType e;
-          if (ListDelete(L, i, e))
+          if (ListDelete(Lists[i], i, e))
             printf("删除的值为：%d\n", e);
           printf("输入 index：\n");
         }
@@ -173,7 +172,7 @@ int main(void) {
         break;
       }
       case 12:
-        if (!ListTraverse(L))
+        if (!ListTraverse(Lists[i]))
           printf("线性表是空表！\n");
         getchar();
         getchar();
@@ -184,13 +183,13 @@ int main(void) {
         printf("Input file name: ");
         scanf("%s", filename);
 
-        L.length = 0;
+        Lists[i].length = 0;
         if ((fp = fopen(filename, "r")) == NULL) {
           printf("File open error\n");
           return 1;
         }
-        while (fread(&L.elem[L.length], sizeof(ElemType), 1, fp))
-          L.length++;
+        while (fread(&Lists[i].elem[Lists[i].length], sizeof(ElemType), 1, fp))
+          Lists[i].length++;
         break;
       }
       case 14: {
@@ -205,7 +204,7 @@ int main(void) {
           getchar();
           break;
         }
-        fwrite(L.elem, sizeof(ElemType), L.length, fp);
+        fwrite(Lists[i].elem, sizeof(ElemType), Lists[i].length, fp);
         fclose(fp);
         getchar();
         getchar();
@@ -215,6 +214,7 @@ int main(void) {
       case 15: {
         SqList l;
         InitList(l);
+        // l.elem = new int();
         Lists.push_back(l);
         printf("添加一张空表成功！\n");
         getchar();
@@ -222,13 +222,13 @@ int main(void) {
         break;
       }
       case 16: {
-        int i;
+        int __i;
         printf("输入表编号(0~%d):", Lists.size() - 1);
-        while (!(scanf("%u", &i) && (i <= Lists.size() - 1))) {
+        while (!(scanf("%u", &__i) && (__i <= Lists.size() - 1))) {
           printf("输入表编号(0~%d):", Lists.size() - 1);
         }
-        L = Lists[i];
-        printf("切换到表%d成功！\n", i);
+        i = __i;
+        printf("切换到表%d成功！\n", __i);
         getchar();
         getchar();
         break;
@@ -236,7 +236,7 @@ int main(void) {
       case 17: {
         int i = 0;
         for (auto l : Lists) {
-          if (l == L) {
+          if (l == Lists[i]) {
             printf("当前是表%d\n", i);
             break;
           }
