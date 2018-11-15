@@ -213,7 +213,9 @@ int main(void) {
       }
 
       case 15: {
-        Lists.push_back(SqList());
+        SqList l;
+        InitList(l);
+        Lists.push_back(l);
         printf("添加一张空表成功！\n");
         getchar();
         getchar();
