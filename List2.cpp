@@ -2,8 +2,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <vector>
-using namespace std;
+#include <functional>
 
 /*---------page 10 on textbook ---------*/
 #define TRUE 1
@@ -20,16 +19,12 @@ typedef int ElemType;  //数据元素类型定义
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT 10
 
-struct SqList {  //顺序表（顺序结构）的定义
+typedef struct
+{  //顺序表（顺序结构）的定义
   ElemType* elem;
   size_t length;
   size_t listSize;
-  bool operator==(SqList L2) {
-    return L2.elem == this->elem &&
-           L2.length == this->length &&
-           L2.listSize == this->listSize;
-  }
-};
+} SqList;
 
 /*-----page 19 on textbook ---------*/
 status InitList(SqList& L);
@@ -48,7 +43,6 @@ status ListTraverse(SqList L);  //简化过
 /*--------------------------------------------*/
 int main(void) {
   SqList L;
-  vector<SqList> Lists = {L};
   int op = 1;
   while (op) {
     system("cls");
@@ -63,9 +57,6 @@ int main(void) {
     printf("      6. GetElem         12. ListTraverse\n");
     printf("      0. Exit            13. ReadList\n");
     printf("                         14. WriteList\n");
-    printf("                         15. AddList\n");
-    printf("                         16. ChangeList\n");
-    printf("                         17. CurrentList\n");
     printf("-------------------------------------------------\n");
     printf("请选择你的操作[0~12]:");
     scanf("%d", &op);
@@ -186,7 +177,7 @@ int main(void) {
 
         L.length = 0;
         if ((fp = fopen(filename, "r")) == NULL) {
-          printf("File open error\n");
+          printf("File open error\n ");
           return 1;
         }
         while (fread(&L.elem[L.length], sizeof(ElemType), 1, fp))
@@ -200,47 +191,13 @@ int main(void) {
         scanf("%s", filename);
 
         if ((fp = fopen(filename, "w")) == NULL) {
-          printf("File open error\n");
+          printf("File open error\n ");
           getchar();
           getchar();
           break;
         }
         fwrite(L.elem, sizeof(ElemType), L.length, fp);
         fclose(fp);
-        getchar();
-        getchar();
-        break;
-      }
-
-      case 15: {
-        Lists.push_back(SqList());
-        printf("添加一张空表成功！\n");
-        getchar();
-        getchar();
-        break;
-      }
-      case 16: {
-        int i;
-        printf("输入表编号(0~%d):", Lists.size() - 1);
-        while (!(scanf("%u", &i) && (i <= Lists.size() - 1))) {
-          printf("输入表编号(0~%d):", Lists.size() - 1);
-        }
-        L = Lists[i];
-        printf("切换到表%d成功！\n", i);
-        getchar();
-        getchar();
-        break;
-      }
-      case 17: {
-        int i = 0;
-        for (auto l : Lists) {
-          if (l == L) {
-            printf("当前是表%d\n", i);
-            break;
-          }
-          i++;
-        }
-
         getchar();
         getchar();
         break;
