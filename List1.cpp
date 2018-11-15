@@ -105,11 +105,11 @@ int main(void) {
           getchar();
           break;
         }
-        int i;
+        int __i;
         printf("输入 index：\n");
-        scanf("%u", &i);
+        scanf("%u", &__i);
         ElemType e;
-        GetElem(Lists[i], i, e);
+        GetElem(Lists[i], __i, e);
         printf("值：%d", e);
         getchar();
         getchar();
@@ -147,11 +147,11 @@ int main(void) {
       }
       case 10: {
         ElemType e;
-        size_t i;
+        size_t __i;
         printf("先后输入 index 和 item：\n");
-        while (scanf("%u", &i) && scanf("%d", &e)) {
-          if (ListInsert(Lists[i], i, e))
-            printf("成功在%d插入%d\n", i, e);
+        while (scanf("%u", &__i) && scanf("%d", &e) && __i <= Lists[i].length - 1) {
+          if (ListInsert(Lists[i], __i, e))
+            printf("成功在%d插入%d\n", __i, e);
           printf("先后输入 index 和 item：\n");
         }
         getchar();
@@ -159,11 +159,11 @@ int main(void) {
         break;
       }
       case 11: {
-        size_t i;
+        size_t __i;
         printf("输入 index：\n");
-        while (scanf("%u", &i)) {
+        while (scanf("%u", &__i)) {
           ElemType e;
-          if (ListDelete(Lists[i], i, e))
+          if (ListDelete(Lists[i], __i, e))
             printf("删除的值为：%d\n", e);
           printf("输入 index：\n");
         }
@@ -234,14 +234,7 @@ int main(void) {
         break;
       }
       case 17: {
-        int i = 0;
-        for (auto l : Lists) {
-          if (l == Lists[i]) {
-            printf("当前是表%d\n", i);
-            break;
-          }
-          i++;
-        }
+        printf("当前是表%d\n", i);
 
         getchar();
         getchar();
