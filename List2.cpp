@@ -1,8 +1,9 @@
 /* Linear Table On Sequence Structure */
-#include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <functional>
+#include <string>
+#include <vector>
 
 /*---------page 10 on textbook ---------*/
 #define TRUE 1
@@ -12,55 +13,58 @@
 #define INFEASTABLE -1
 #define OVERFLOW -2
 
-typedef int status;
-
 /*-------page 22 on textbook -------*/
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT 10
 
+using namespace std;
+
+typedef int status;
+
 template <typename T>
-struct LinkedListNode {
+struct Node {
   T data;
-  LinkedListNode* next;
+  Node* next;
 };
 
 template <typename T>
 struct LinkedList {
   int length;
-  LinkedListNode<T>* head;
-  LinkedList* next;
-  int ListID = -1;
+  bool init;
+  Node<T>* head;
 };
 
+// using IntLinkedList = LinkedList<int>;
+
 /*-----page 19 on textbook ---------*/
-template <typename T>
-status InitList(LinkedList<T>& L);
-template <typename T>
-status DestroyList(LinkedList<T>& L);
-template <typename T>
-status ClearList(LinkedList<T>& L);
-template <typename T>
-bool ListEmpty(const LinkedList<T> L);
-template <typename T>
-size_t ListLength(const LinkedList<T> L);
-template <typename T>
-status GetElem(const LinkedList<T> L, size_t i, T& e);
-template <typename T>
-size_t LocateElem(const LinkedList<T> L, const T e);
-template <typename T>
-status PriorElem(LinkedList<T> L, T cur, T& pre_e);
-template <typename T>
-status NextElem(LinkedList<T> L, T cur, T& next_e);
-template <typename T>
-status ListInsert(LinkedList<T>& L, size_t i, T e);
-template <typename T>
-status ListDelete(LinkedList<T>& L, size_t i, T& e);
-template <typename T>
-status ListTraverse(LinkedList<T> L);
+// template <typename T>
+// status InitList(LinkedList<T>&);
+// template <typename T>
+// status DestroyList(LinkedList<T>&);
+// template <typename T>
+// status ClearList(LinkedList<T>&);
+// template <typename T>
+// bool ListEmpty(const LinkedList<T>);
+// template <typename T>
+// size_t ListLength(const LinkedList<T>);
+// template <typename T>
+// status GetElem(const LinkedList<T>, size_t, T&);
+// template <typename T>
+// size_t LocateElem(const LinkedList<T>, const T);
+// template <typename T>
+// status PriorElem(LinkedList<T>, T cur, T& pre_e);
+// template <typename T>
+// status NextElem(LinkedList<T>, T cur, T& next_e);
+// template <typename T>
+// status ListInsert(LinkedList<T>&, size_t i, T e);
+// template <typename T>
+// status ListDelete(LinkedList<T>&, size_t i, T& e);
+// template <typename T>
+// status ListTraverse(LinkedList<T>, function<void(Node<T>)>);
 
 template <typename T>
-status IntiaList(LinkedList<T>& L) {
-  L.head = (LinkedListNode<T>*)malloc(sizeof(LinkedListNode<T>));
+status InitList(LinkedList<T>& L) {
+  L.head = (Node<T>*)malloc(sizeof(Node<T>));
   if (L.head == NULL)
     return ERROR;
   L.head->next = NULL;
@@ -70,8 +74,8 @@ status IntiaList(LinkedList<T>& L) {
 
 template <typename T>
 status DestroyList(LinkedList<T>& L) {
-  LinkedListNode<T>* tmp = L.head->next;
-  LinkedListNode<T>* tmp2 = tmp;
+  Node<T>* tmp = L.head->next;
+  Node<T>* tmp2 = tmp;
   while (tmp != NULL) {
     tmp2 = tmp->next;
     free(tmp);
@@ -85,8 +89,8 @@ status DestroyList(LinkedList<T>& L) {
 
 template <typename T>
 status ClearList(LinkedList<T>& L) {
-  LinkedListNode<T>* tmp = L.head->next;
-  LinkedListNode<T>* tmp2 = tmp;
+  Node<T>* tmp = L.head->next;
+  Node<T>* tmp2 = tmp;
   while (tmp != NULL) {
     tmp2 = tmp->next;
     free(tmp);
@@ -98,7 +102,7 @@ status ClearList(LinkedList<T>& L) {
 }
 
 template <typename T>
-bool ListEmpty(const LinkedList<T>& L) {
+bool ListEmpty(const LinkedList<T> L) {
   if (L.length == 0)
     return true;
   else
@@ -106,16 +110,16 @@ bool ListEmpty(const LinkedList<T>& L) {
 }
 
 template <typename T>
-int ListLength(const LinkedList<T>& L) {
+size_t ListLength(const LinkedList<T> L) {
   return L.length;
 }
 
 template <typename T>
-status GetElem(const LinkedList<T>& L, int i, T& e) {
+status GetElem(const LinkedList<T> L, size_t i, T& e) {
   if (i < 1 || i > L.length) {
     return ERROR;
   }
-  LinkedListNode<T>* ele = L.head;
+  Node<T>* ele = L.head;
   for (int j = 0; j < i; j++) {
     ele = ele->next;
   }
@@ -125,7 +129,7 @@ status GetElem(const LinkedList<T>& L, int i, T& e) {
 
 template <typename T>
 size_t LocateElem(const LinkedList<T> L, const T e) {
-  LinkedListNode<T>* ele = L.head;
+  Node<T>* ele = L.head;
   for (int i = 0; i < L.length; i++) {
     ele = ele->next;
     if (ele->data == e)
@@ -135,7 +139,7 @@ size_t LocateElem(const LinkedList<T> L, const T e) {
 }
 
 template <typename T>
-status PriorElem(const LinkedList<T>& L, const T& cur_e, T& pre_e) {
+status PriorElem(const LinkedList<T> L, const T cur_e, T& pre_e) {
   int loc = LocateElem(L, cur_e);
   if (loc == 0 || loc == 1)
     return ERROR;
@@ -147,7 +151,7 @@ status PriorElem(const LinkedList<T>& L, const T& cur_e, T& pre_e) {
 }
 
 template <typename T>
-status NextElem(const LinkedList<T>& L, const T& cur_e, T& next_e) {
+status NextElem(const LinkedList<T> L, const T cur_e, T& next_e) {
   int loc = LocateElem(L, cur_e);
   if (loc == L.length || loc == 0)
     return ERROR;
@@ -159,14 +163,14 @@ status NextElem(const LinkedList<T>& L, const T& cur_e, T& next_e) {
 }
 
 template <typename T>
-status ListInsert(LinkedList<T>& L, size_t i, T& e) {
+status ListInsert(LinkedList<T>& L, size_t i, T e) {
   if (i < 1 || i > L.length + 1)
     return ERROR;
-  LinkedListNode<T>* ele = L.head;
+  Node<T>* ele = L.head;
   for (int j = 0; j < i - 1; j++) {
     ele = ele->next;
   }
-  LinkedListNode<T>* tmp = (LinkedListNode<T>*)malloc(sizeof(LinkedListNode<T>));
+  Node<T>* tmp = (Node<T>*)malloc(sizeof(Node<T>));
   tmp->data = e;
   tmp->next = ele->next;
   ele->next = tmp;
@@ -179,25 +183,239 @@ status ListDelete(LinkedList<T>& L, size_t i, T& e) {
   if (i < 1 || i > L.length)
     return ERROR;
   L.length--;
-  GetElem(L, i, e);
-  LinkedListNode<T>* ele = L.head;
+  GetElem<T>(L, i, e);
+  Node<T>* ele = L.head;
   for (int j = 0; j < i - 1; j++) {
     ele = ele->next;
   }
-  LinkedListNode<T>* tmp = ele->next;
+  Node<T>* tmp = ele->next;
   ele->next = tmp->next;
   free(tmp);
   return OK;
 }
 
 template <typename T>
-status ListTraverse(const LinkedList<T>& L) {
-  LinkedListNode<T>* ele = L.head->next;
-  printf("\n-----------all elements -----------------------\n");
+status ListTraverse(const LinkedList<T> L, function<void(Node<T>)> cb) {
+  Node<T>* ele = L.head->next;
   while (ele != NULL) {
-    printf("%d ", ele->data);
+    cb(*ele);
     ele = ele->next;
   }
-  printf("\n------------------ end ------------------------\n");
   return OK;
+}
+
+int main(void) {
+  using ElemType = string;
+  int i = 0;
+  auto Lists = vector<LinkedList<ElemType>>{};
+  int op = 1;
+  while (op) {
+    system("cls");
+    printf("\n\n");
+    printf("    Menu for Linear Table On Linked Structure    \n");
+    printf("-------------------------------------------------\n");
+    printf("       1. InitList         7. LocateElem         \n");
+    printf("       2. DestroyList      8. PriorElem          \n");
+    printf("       3. ClearList        9. NextElem           \n");
+    printf("       4. ListEmpty       10. ListInsert         \n");
+    printf("       5. ListLength      11. ListDelete         \n");
+    printf("       6. GetElem         12. ListTraverse       \n");
+    printf("       0. Exit            13. ReadList           \n");
+    printf("                          14. WriteList          \n");
+    printf("                          15. AddList            \n");
+    printf("                          16. ChangeList         \n");
+    printf("                          17. CurrentList        \n");
+    printf("-------------------------------------------------\n");
+    printf("请选择你的操作[0~12]:");
+    scanf("%d", &op);
+    switch (op) {
+      case 1:
+        //printf("\n----InitList功能待实现！\n");
+        if (InitList(Lists[i]) == OK)
+          printf("线性表创建成功！\n");
+        else
+          printf("线性表创建失败！\n");
+        getchar();
+        getchar();
+        break;
+      case 2:
+        DestroyList(Lists[i]);
+        getchar();
+        getchar();
+        break;
+      case 3:
+        ClearList(Lists[i]);
+        getchar();
+        getchar();
+        break;
+      case 4:
+        printf("列表是否为空：%s", ListEmpty(Lists[i]) ? "是" : "否");
+        getchar();
+        getchar();
+        break;
+      case 5:
+        printf("列表长度：%d", ListLength(Lists[i]));
+        getchar();
+        getchar();
+        break;
+      case 6: {
+        if (ListEmpty(Lists[i])) {
+          printf("列表为空！");
+          getchar();
+          getchar();
+          break;
+        }
+        int __i;
+        printf("输入 index：\n");
+        scanf("%u", &__i);
+        ElemType e;
+        GetElem(Lists[i], __i, e);
+        printf("值：%d", e);
+        getchar();
+        getchar();
+        break;
+      }
+      case 7: {
+        ElemType e;
+        scanf("%d", &e);
+        printf("值：%d", LocateElem(Lists[i], e));
+        getchar();
+        getchar();
+        break;
+      }
+      case 8: {
+        ElemType e;
+        ElemType p_e;
+        printf("输入值：");
+        scanf("%d", &e);
+        PriorElem(Lists[i], e, p_e);
+        printf("前驱：%d", p_e);
+        getchar();
+        getchar();
+        break;
+      }
+      case 9: {
+        ElemType e;
+        ElemType n_e;
+        printf("输入值：");
+        scanf("%d", &e);
+        NextElem(Lists[i], e, n_e);
+        printf("后继：%d", n_e);
+        getchar();
+        getchar();
+        break;
+      }
+      case 10: {
+        ElemType e;
+        size_t __i;
+        printf("先后输入 index 和 item：\n");
+        while (scanf("%u", &__i) && scanf("%d", &e) && __i <= Lists[i].length - 1) {
+          if (ListInsert(Lists[i], __i, e))
+            printf("成功在%d插入%d\n", __i, e);
+          printf("先后输入 index 和 item：\n");
+        }
+        getchar();
+        getchar();
+        break;
+      }
+      case 11: {
+        size_t __i;
+        printf("输入 index：\n");
+        while (scanf("%u", &__i)) {
+          ElemType e;
+          if (ListDelete(Lists[i], __i, e))
+            printf("删除的值为：%d\n", e);
+          printf("输入 index：\n");
+        }
+        getchar();
+        getchar();
+        break;
+      }
+      case 12:
+        if (!ListTraverse<ElemType>(Lists[i],
+                                    [](auto ele) -> void {
+                                      printf("%d ", ele.data);
+                                      return;
+                                    }))
+
+          printf("线性表是空表！\n");
+        getchar();
+        getchar();
+        break;
+      case 13: {
+        FILE* fp;
+        char filename[30];
+        printf("Input file name: ");
+        scanf("%s", filename);
+
+        Lists[i].length = 0;
+        if ((fp = fopen(filename, "r")) == NULL) {
+          printf("File open error\n");
+          return 1;
+        }
+        // while (fread(&Lists[i].elem[Lists[i].length], sizeof(int), 1, fp))
+        //   Lists[i].length++;
+        break;
+      }
+      case 14: {
+        FILE* fp;
+        char filename[30];
+        printf("Input file name: ");
+        scanf("%s", filename);
+
+        if ((fp = fopen(filename, "w")) == NULL) {
+          printf("File open error\n");
+          getchar();
+          getchar();
+          break;
+        }
+
+        ListTraverse<ElemType>(
+            Lists[i],
+            [&](auto ele) -> void {
+              fwrite(&ele.data, sizeof(decltype(ele.data)), Lists[i].length, fp);
+            });
+
+        fclose(fp);
+        getchar();
+        getchar();
+        break;
+      }
+
+      case 15: {
+        LinkedList<ElemType> l;
+        InitList(l);
+        // l.elem = new int();
+        Lists.push_back(l);
+        printf("添加一张空表成功！\n");
+        getchar();
+        getchar();
+        break;
+      }
+      case 16: {
+        int __i;
+        printf("输入表编号(0~%d):", Lists.size() - 1);
+        while (!(scanf("%u", &__i) && (__i <= Lists.size() - 1))) {
+          printf("输入表编号(0~%d):", Lists.size() - 1);
+        }
+        i = __i;
+        printf("切换到表%d成功！\n", __i);
+        getchar();
+        getchar();
+        break;
+      }
+      case 17: {
+        printf("当前是表%d\n", i);
+
+        getchar();
+        getchar();
+        break;
+      }
+
+      case 0:
+        break;
+    }
+  }
+  printf("欢迎下次再使用本系统！\n");
+  getchar();
 }

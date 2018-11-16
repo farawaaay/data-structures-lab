@@ -9,10 +9,11 @@
       "command": "C:\\Program Files\\mingw-w64\\mingw64\\bin\\g++.exe",
       "group": "build",
       "args": [
+        "-Wall",
         "-g",
         "${workspaceFolder}/List1.cpp",
         "-o",
-        "${workspaceFolder}/build/List1.exe"
+        "${workspaceFolder}/build/List1.exe",
       ],
       "problemMatcher": []
     },

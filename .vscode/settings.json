@@ -45,5 +45,6 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "functional": "cpp"
-    }
+    },
+    "files.encoding": "gb2312"
 }
