@@ -173,6 +173,7 @@ status ListInsert(LinkedList<T>& L, size_t i, T e) {
 
     ele->next = new Node<T>();
     ele->next->data = e;
+    return OK;
   }
   if (i < 0 || i > L.length)
     return ERROR;
@@ -388,8 +389,11 @@ int main(void) {
           printf("File open error\n");
           return 1;
         }
-        // while (fread(&Lists[i].elem[Lists[i].length], sizeof(int), 1, fp))
-        //   Lists[i].length++;
+        ElemType e;
+        ClearList(Lists[i]);
+        while (fread(&e, sizeof(ElemType), 1, fp)) {
+          ListInsert(Lists[i], ListLength(Lists[i]), e);
+        }
         break;
       }
       case 14: {
@@ -408,7 +412,7 @@ int main(void) {
         ListTraverse<ElemType>(
             Lists[i],
             [&](auto ele) -> void {
-              fwrite(&ele.data, sizeof(decltype(ele.data)), Lists[i].length, fp);
+              fwrite(&ele.data, sizeof(ElemType), 1, fp);
             });
 
         fclose(fp);
