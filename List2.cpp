@@ -143,7 +143,7 @@ int LocateElem(const LinkedList<T> L, const T e) {
 template <typename T>
 status PriorElem(const LinkedList<T> L, const T cur_e, T& pre_e) {
   int loc = LocateElem(L, cur_e);
-  if (loc == 0 || loc == 1)
+  if (loc == 0 || loc == -1)
     return ERROR;
   else {
     loc--;
@@ -155,7 +155,7 @@ status PriorElem(const LinkedList<T> L, const T cur_e, T& pre_e) {
 template <typename T>
 status NextElem(const LinkedList<T> L, const T cur_e, T& next_e) {
   int loc = LocateElem(L, cur_e);
-  if (loc == L.length || loc == 0)
+  if (loc == L.length - 1 || loc == -1)
     return ERROR;
   else {
     loc++;
@@ -313,8 +313,11 @@ int main(void) {
         ElemType p_e;
         printf("输入值：");
         scanf("%d", &e);
-        PriorElem(Lists[i], e, p_e);
-        printf("前驱：%d", p_e);
+        if (PriorElem(Lists[i], e, p_e) == OK) {
+          printf("前驱：%d", p_e);
+        } else {
+          printf("失败！");
+        }
         getchar();
         getchar();
         break;
@@ -324,8 +327,11 @@ int main(void) {
         ElemType n_e;
         printf("输入值：");
         scanf("%d", &e);
-        NextElem(Lists[i], e, n_e);
-        printf("后继：%d", n_e);
+        if (NextElem(Lists[i], e, n_e) == OK) {
+          printf("后继：%d", n_e);
+        } else {
+          printf("失败！");
+        }
         getchar();
         getchar();
         break;
