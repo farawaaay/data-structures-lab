@@ -69,6 +69,7 @@ status InitList(LinkedList<T>& L) {
     return ERROR;
   L.head->next = NULL;
   L.length = 0;
+  L.init = true;
   return OK;
 }
 
@@ -84,6 +85,7 @@ status DestroyList(LinkedList<T>& L) {
   free(L.head);
   L.head = NULL;
   L.length = 0;
+  L.init = false;
   return OK;
 }
 
@@ -116,10 +118,10 @@ size_t ListLength(const LinkedList<T> L) {
 
 template <typename T>
 status GetElem(const LinkedList<T> L, size_t i, T& e) {
-  if (i < 1 || i > L.length) {
+  if (i < 0 || i > L.length - 1) {
     return ERROR;
   }
-  Node<T>* ele = L.head;
+  Node<T>* ele = L.head->next;
   for (int j = 0; j < i; j++) {
     ele = ele->next;
   }
@@ -128,14 +130,14 @@ status GetElem(const LinkedList<T> L, size_t i, T& e) {
 }
 
 template <typename T>
-size_t LocateElem(const LinkedList<T> L, const T e) {
+int LocateElem(const LinkedList<T> L, const T e) {
   Node<T>* ele = L.head;
   for (int i = 0; i < L.length; i++) {
     ele = ele->next;
     if (ele->data == e)
-      return i + 1;
+      return i;
   }
-  return 0;
+  return -1;
 }
 
 template <typename T>
@@ -164,10 +166,18 @@ status NextElem(const LinkedList<T> L, const T cur_e, T& next_e) {
 
 template <typename T>
 status ListInsert(LinkedList<T>& L, size_t i, T e) {
-  if (i < 1 || i > L.length + 1)
+  if (i == ListLength(L) && i != 0) {
+    Node<T>* ele = L.head;
+    while (ele->next != NULL)
+      ele = ele->next;
+
+    ele->next = new Node<T>();
+    ele->next->data = e;
+  }
+  if (i < 0 || i > L.length)
     return ERROR;
   Node<T>* ele = L.head;
-  for (int j = 0; j < i - 1; j++) {
+  for (int j = 0; j < i; j++) {
     ele = ele->next;
   }
   Node<T>* tmp = (Node<T>*)malloc(sizeof(Node<T>));
@@ -180,12 +190,12 @@ status ListInsert(LinkedList<T>& L, size_t i, T e) {
 
 template <typename T>
 status ListDelete(LinkedList<T>& L, size_t i, T& e) {
-  if (i < 1 || i > L.length)
+  if (i < 0 || L.length == 0 || i > L.length - 1)
     return ERROR;
   L.length--;
   GetElem<T>(L, i, e);
   Node<T>* ele = L.head;
-  for (int j = 0; j < i - 1; j++) {
+  for (int j = 0; j < i; j++) {
     ele = ele->next;
   }
   Node<T>* tmp = ele->next;
@@ -205,9 +215,9 @@ status ListTraverse(const LinkedList<T> L, function<void(Node<T>)> cb) {
 }
 
 int main(void) {
-  using ElemType = string;
+  using ElemType = int;
   int i = 0;
-  auto Lists = vector<LinkedList<ElemType>>{};
+  auto Lists = vector<LinkedList<ElemType>>{LinkedList<ElemType>()};
   int op = 1;
   while (op) {
     system("cls");
@@ -228,6 +238,12 @@ int main(void) {
     printf("-------------------------------------------------\n");
     printf("请选择你的操作[0~12]:");
     scanf("%d", &op);
+    if (op != 1 && Lists[i].init == false) {
+      printf("线性表未创建！\n");
+      getchar();
+      getchar();
+      continue;
+    }
     switch (op) {
       case 1:
         //printf("\n----InitList功能待实现！\n");
@@ -269,16 +285,25 @@ int main(void) {
         printf("输入 index：\n");
         scanf("%u", &__i);
         ElemType e;
-        GetElem(Lists[i], __i, e);
-        printf("值：%d", e);
+        if (GetElem(Lists[i], __i, e) != OK) {
+          printf("获取出错！\n");
+        } else {
+          printf("值：%d", e);
+        }
         getchar();
         getchar();
         break;
       }
       case 7: {
         ElemType e;
+        printf("输入值：\n");
         scanf("%d", &e);
-        printf("值：%d", LocateElem(Lists[i], e));
+        int index;
+        if ((index = LocateElem(Lists[i], e)) == -1) {
+          printf("未能找到！\n");
+        } else {
+          printf("Index：%d \n", index);
+        }
         getchar();
         getchar();
         break;
@@ -309,9 +334,11 @@ int main(void) {
         ElemType e;
         size_t __i;
         printf("先后输入 index 和 item：\n");
-        while (scanf("%u", &__i) && scanf("%d", &e) && __i <= Lists[i].length - 1) {
-          if (ListInsert(Lists[i], __i, e))
+        while (scanf("%u %d", &__i, &e) && __i <= ListLength(Lists[i]) - 1) {
+          if (ListInsert(Lists[i], __i, e) == OK)
             printf("成功在%d插入%d\n", __i, e);
+          else
+            printf("未能插入任何元素！\n");
           printf("先后输入 index 和 item：\n");
         }
         getchar();
@@ -319,12 +346,14 @@ int main(void) {
         break;
       }
       case 11: {
-        size_t __i;
+        int __i;
         printf("输入 index：\n");
-        while (scanf("%u", &__i)) {
+        while (scanf("%d", &__i)) {
           ElemType e;
-          if (ListDelete(Lists[i], __i, e))
+          if (ListDelete(Lists[i], __i, e) == OK)
             printf("删除的值为：%d\n", e);
+          else
+            printf("未能删除任何元素！\n");
           printf("输入 index：\n");
         }
         getchar();
