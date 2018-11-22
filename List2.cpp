@@ -173,6 +173,7 @@ status ListInsert(LinkedList<T>& L, size_t i, T e) {
 
     ele->next = new Node<T>();
     ele->next->data = e;
+    L.length++;
     return OK;
   }
   if (i < 0 || i > L.length)
@@ -303,7 +304,7 @@ int main(void) {
         if ((index = LocateElem(Lists[i], e)) == -1) {
           printf("Œ¥ƒ‹’“µΩ£°\n");
         } else {
-          printf("Index£∫%d \n", index);
+          printf("Index: %d \n", index);
         }
         getchar();
         getchar();
@@ -387,13 +388,19 @@ int main(void) {
         Lists[i].length = 0;
         if ((fp = fopen(filename, "r")) == NULL) {
           printf("File open error\n");
-          return 1;
+          getchar();
+          getchar();
+          break;
         }
         ElemType e;
         ClearList(Lists[i]);
         while (fread(&e, sizeof(ElemType), 1, fp)) {
           ListInsert(Lists[i], ListLength(Lists[i]), e);
         }
+
+        fclose(fp);
+        getchar();
+        getchar();
         break;
       }
       case 14: {
