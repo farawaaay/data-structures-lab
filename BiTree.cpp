@@ -503,6 +503,8 @@ int main() {
     printf("      8.Value            18.InOrderTraverse     \n");
     printf("      9.Assign           19.PostOrderTraverse   \n");
     printf("      10.Parent          20.LevelOrderTraverse  \n");
+    printf("                                                \n");
+    printf("      0.Exit                                    \n");
     printf("------------------------------------------------\n");
     printf("\n");
     printf("ÇëÑ¡ÔñÄãµÄ²Ù×÷[0~20]:");
