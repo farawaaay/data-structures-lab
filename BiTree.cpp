@@ -406,7 +406,7 @@ void PrintMenu(void) {
 status LoadData(BiTree** head) {
   int *preorder = NULL, *inorder = NULL;
   ElemType* data = NULL;
-  FILE* fp = fopen("SLDB", "r");
+  FILE* fp = fopen("trees", "r");
   if (fp == NULL)
     return ERROR;
 
@@ -466,7 +466,7 @@ status LoadData(BiTree** head) {
 }
 
 status SaveData(BiTree* head) {
-  FILE* fp = fopen("SLDB", "w");
+  FILE* fp = fopen("trees", "w");
   if (fp == NULL)
     return ERROR;
   BiTree *L = head, *p = head;
@@ -525,11 +525,11 @@ int main() {
         head = L;
         break;
       case 1:
-        printf("* Function Name: InitBiTree\n");
-        printf("* Parameter: BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: initialize the binary tree\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: InitBiTree\n");
+        // printf("* Parameter: BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: initialize the binary tree\n");
+        printf("输入这棵树的Id:");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -537,35 +537,37 @@ int main() {
           head = head->next;
         }
         if (head != NULL) {
-          printf("Error, the tree %d already exist.\n", tree_index);
+          printf("Id为%d的树已经存在了！\n", tree_index);
         } else {
           BiTree* new_tree = (BiTree*)malloc(sizeof(BiTree));
           if (InitBiTree(*new_tree) == OK) {
-            printf("Inital the tree %d succeed.\n", tree_index);
+            printf("创建Id为%d的树成功！\n", tree_index);
             new_tree->TreeID = tree_index;
             new_tree->next = L;
             head = new_tree;
           } else {
-            printf("ERROR, something wrong with the RAM\n");
+            printf("创建树失败！\n");
           }
         }
         printf("\n");
+        getchar();
+        getchar();
         break;
       case 2:
-        printf("* Function Name: DestroyBiTree\n");
-        printf("* Parameter: BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: destroy the binary tree\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: DestroyBiTree\n");
+        // printf("* Parameter: BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: destroy the binary tree\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         if (head == NULL) {
-          printf("Error, the Tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           break;
         }
         if (head->TreeID == tree_index) {
           head = head->next;
           DestroyBiTree(*L);
-          printf("Tree %d has been removed\n", tree_index);
+          printf("Id为%d的树被删除了！\n", tree_index);
           break;
         }
         while (head->next != NULL) {
@@ -574,23 +576,25 @@ int main() {
           head = head->next;
         }
         if (head->next == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！", tree_index);
           head = L;
         } else {
           L = head->next;
           head->next = head->next->next;
           DestroyBiTree(*L);
-          printf("Tree %d has been removed\n", tree_index);
+          printf("Id为%d的树被删除了！\n", tree_index);
           head = tmp;
         }
         printf("\n");
+        getchar();
+        getchar();
         break;
       case 3:
-        printf("* Function Name: CreateBiTree\n");
-        printf("* Parameter: BiTree &T, int length, int *preorder, int *inorder, ElemType * data\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: create the tree using the defination data\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: CreateBiTree\n");
+        // printf("* Parameter: BiTree &T, int length, int *preorder, int *inorder, ElemType * data\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: create the tree using the defination data\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -598,27 +602,31 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           int length = 0;
-          cout << "please insert the length" << endl;
+          printf("输入树的长度：\n");
           cin >> length;
           int* pre = (int*)malloc(sizeof(int) * length);
           int* in = (int*)malloc(sizeof(int) * length);
           ElemType* data = (ElemType*)malloc(sizeof(ElemType) * length);
-          cout << "please insert the preorder index" << endl;
+          // cout << "please insert the preorder index" << endl;
+          printf("输入先序遍历的index：\n");
           for (int i = 0; i < length; i++)
             cin >> pre[i];
-          cout << "please insert the inorder index" << endl;
+          // cout << "please insert the inorder index" << endl;
+          printf("输入中序遍历的index：\n");
           for (int i = 0; i < length; i++)
             cin >> in[i];
-          cout << "please insert the inorder data" << endl;
+          // cout << "please insert the inorder data" << endl;
+          printf("输入中序遍历的数据：\n");
           for (int i = 0; i < length; i++)
             cin >> data[i];
           ClearBiTree(*head);
           if (!isvalid(pre, in, length)) {
-            cout << "the index is not valid." << endl;
+            // cout << "the index is not valid." << endl;
+            printf("index无效！\n");
             free(pre);
             free(in);
             free(data);
@@ -633,13 +641,15 @@ int main() {
         }
 
         printf("\n");
+        getchar();
+        getchar();
         break;
       case 4:
-        printf("* Function Name: ClearBiTree\n");
-        printf("* Parameter: BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: clear the BiTree\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: ClearBiTree\n");
+        // printf("* Parameter: BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: clear the BiTree\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -647,20 +657,22 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           ClearBiTree(*head);
           head = L;
-          printf("The Tree %d has been cleared.\n", tree_index);
+          printf("Id为%d的树已经被清空！\n", tree_index);
         }
+        getchar();
+        getchar();
         break;
       case 5:
-        printf("* Function Name: BiTreeEmpty\n");
-        printf("* Parameter: const BiTree &T\n");
-        printf("* Return: bool\n");
-        printf("* Use: check whether the tree is empty\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: BiTreeEmpty\n");
+        // printf("* Parameter: const BiTree &T\n");
+        // printf("* Return: bool\n");
+        // printf("* Use: check whether the tree is empty\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -668,24 +680,26 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           bool empty = BiTreeEmpty(*head);
           head = L;
           if (empty) {
-            printf("The tree %d is empty!", tree_index);
+            printf("True");
           } else {
-            printf("The tree %d is not empty", tree_index);
+            printf("False");
           }
         }
+        getchar();
+        getchar();
         break;
       case 6:
-        printf("* Function Name: BiTreeDepth\n");
-        printf("* Parameter: const BiTree &T\n");
-        printf("* Return: int\n");
-        printf("* Use: calculate the depth of the tree.\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: BiTreeDepth\n");
+        // printf("* Parameter: const BiTree &T\n");
+        // printf("* Return: int\n");
+        // printf("* Use: calculate the depth of the tree.\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -693,19 +707,21 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
-          printf("The depth of tree %d is %d", tree_index, BiTreeDepth(*head));
+          printf("树%d的深度为%d\n", tree_index, BiTreeDepth(*head));
           head = L;
         }
+        getchar();
+        getchar();
         break;
       case 7:
-        printf("* Function Name: Root\n");
-        printf("* Parameter: const BiTree &T\n");
-        printf("* Return: BiTreeNode *\n");
-        printf("* Use: return the root node of the tree.\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: Root\n");
+        // printf("* Parameter: const BiTree &T\n");
+        // printf("* Return: BiTreeNode *\n");
+        // printf("* Use: return the root node of the tree.\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -713,23 +729,25 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           BiTreeNode* root = Root(*head);
           head = L;
           if (root != NULL)
-            printf("The index of the root is %d,the data is %d\n", root->index, root->data);
+            printf("根的index为%d数据为%d\n", root->index, root->data);
           else
-            printf("The root is empty!");
+            printf("根是空的");
         }
+        getchar();
+        getchar();
         break;
       case 8:
-        printf("* Function Name: Value\n");
-        printf("* Parameter: const BiTree &T, int index,ElemType &value\n");
-        printf("* Return: status\n");
-        printf("* Use: return the value of the node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: Value\n");
+        // printf("* Parameter: const BiTree &T, int index,ElemType &value\n");
+        // printf("* Return: status\n");
+        // printf("* Use: return the value of the node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -737,26 +755,28 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           ElemType value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
           if (Value(*head, index, value) == OK) {
-            cout << "The value is " << value << endl;
+            cout << "值为" << value << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错" << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 9:
-        printf("* Function Name: Assign\n");
-        printf("* Parameter: BiTree &T, int index, ElemType &value\n");
-        printf("* Return: status\n");
-        printf("* Use: assign given value to given node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: Assign\n");
+        // printf("* Parameter: BiTree &T, int index, ElemType &value\n");
+        // printf("* Return: status\n");
+        // printf("* Use: assign given value to given node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -764,28 +784,30 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           ElemType value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
-          cout << "Please insert the desired value!" << endl;
+          cout << "输入数据：" << endl;
           cin >> value;
           if (Assign(*head, index, value) == OK) {
-            cout << "The value " << value << "is successfully inserted into the node " << index << endl;
+            cout << "成功" << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "失败" << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 10:
-        printf("* Function Name: Parent\n");
-        printf("* Parameter: const BiTree &T, int index\n");
-        printf("* Return: BiTreeNode *\n");
-        printf("* Use: return the parent of the given node \n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: Parent\n");
+        // printf("* Parameter: const BiTree &T, int index\n");
+        // printf("* Return: BiTreeNode *\n");
+        // printf("* Use: return the parent of the given node \n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -793,27 +815,30 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           BiTreeNode* value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
           value = Parent(*head, index);
           if (value != NULL) {
-            cout << "The parent data is " << value->data << " and the index is" << value->index << endl;
+            cout << value->index << " " << value->data << endl;
+            // cout << "父节点的数据为" << value->data << "索引为" << value->index << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错." << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 11:
-        printf("* Function Name: LeftChild\n");
-        printf("* Parameter: const BiTree &T, int index\n");
-        printf("* Return: BiTreeNode *\n");
-        printf("* Use: return the LeftChild of the given node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: LeftChild\n");
+        // printf("* Parameter: const BiTree &T, int index\n");
+        // printf("* Return: BiTreeNode *\n");
+        // printf("* Use: return the LeftChild of the given node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -821,27 +846,30 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           BiTreeNode* value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
           value = LeftChild(*head, index);
           if (value != NULL) {
-            cout << "The left child data is " << value->data << " and the index is" << value->index << endl;
+            cout << value->index << " " << value->data << endl;
+            // cout << "The left child data is " << value->data << " and the index is" << value->index << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错." << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 12:
-        printf("* Function Name: RightChild\n");
-        printf("* Parameter: const BiTree &T, int index\n");
-        printf("* Return: BiTreeNode *\n");
-        printf("* Use: return the RightChild of the given node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: RightChild\n");
+        // printf("* Parameter: const BiTree &T, int index\n");
+        // printf("* Return: BiTreeNode *\n");
+        // printf("* Use: return the RightChild of the given node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -849,27 +877,29 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           BiTreeNode* value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
           value = RightChild(*head, index);
           if (value != NULL) {
-            cout << "The right child data is " << value->data << " and the index is" << value->index << endl;
+            cout << value->index << " " << value->data << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错." << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 13:
-        printf("* Function Name: LeftSibling\n");
-        printf("* Parameter: const BiTree &T, int index\n");
-        printf("* Return: BiTreeNode *\n");
-        printf("* Use: return the LeftSibling of the given node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: LeftSibling\n");
+        // printf("* Parameter: const BiTree &T, int index\n");
+        // printf("* Return: BiTreeNode *\n");
+        // printf("* Use: return the LeftSibling of the given node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -877,27 +907,30 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           BiTreeNode* value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
           value = LeftSibling(*head, index);
           if (value != NULL) {
-            cout << "The left sibling data is " << value->data << " and the index is" << value->index << endl;
+            cout << value->index << " " << value->data << endl;
+            // cout << "The left sibling data is " << value->data << " and the index is" << value->index << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错." << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 14:
-        printf("* Function Name: RightSibling\n");
-        printf("* Parameter: const BiTree &T, int index\n");
-        printf("* Return: BiTreeNode *\n");
-        printf("* Use: return the RightSibling of the given node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: RightSibling\n");
+        // printf("* Parameter: const BiTree &T, int index\n");
+        // printf("* Return: BiTreeNode *\n");
+        // printf("* Use: return the RightSibling of the given node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -905,27 +938,30 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           BiTreeNode* value;
           int index = 0;
-          cout << "Please insert the desired index!" << endl;
+          cout << "输入index：" << endl;
           cin >> index;
           value = RightSibling(*head, index);
           if (value != NULL) {
-            cout << "The right sibling data is " << value->data << " and the index is" << value->index << endl;
+            cout << value->index << " " << value->data << endl;
+            // cout << "The right sibling data is " << value->data << " and the index is" << value->index << endl;
           } else
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错." << endl;
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 15:
-        printf("* Function Name: InsertChild\n");
-        printf("* Parameter: BiTree &T, int index, int LR, BiTree &c\n");
-        printf("* Return: status\n");
-        printf("* Use: Insert the BiTree to the given node \n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: InsertChild\n");
+        // printf("* Parameter: BiTree &T, int index, int LR, BiTree &c\n");
+        // printf("* Return: status\n");
+        // printf("* Use: Insert the BiTree to the given node \n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -933,11 +969,11 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           int instree_index = 0;
-          cout << "please enter the id of the inserted tree" << endl;
+          cout << "输入要插入的树的id：" << endl;
           cin >> instree_index;
           BiTree* head2 = L;
           BiTree* pre = L;
@@ -949,23 +985,23 @@ int main() {
             head2 = head2->next;
           }
           if (head2 == NULL) {
-            printf("Error, the tree %d does not exist.\n", tree_index);
+            printf("Id为%d的树不存在！\n", tree_index);
             break;
           } else {
             int index = 0, LR = 0;
-            cout << "please insert the node index" << endl;
+            cout << "输入p：" << endl;
             cin >> index;
-            cout << "L or R? (L = 0 R = 1)" << endl;
+            cout << "L: 0, R: 1：" << endl;
             cin >> LR;
             if (LR != 0 && LR != 1) {
-              cout << "invalid input." << endl;
+              cout << "L: 0, R: 1" << endl;
               head = L;
               break;
             }
             if (InsertChild(*head, index, LR, *head2) != OK)
-              cout << "Sorry, we encounter an error." << endl;
+              cout << "出错." << endl;
             else {
-              cout << "insert complete." << endl;
+              cout << "插入完成" << endl;
               if (L != head2)
                 pre->next = pre->next->next;
               else {
@@ -976,13 +1012,15 @@ int main() {
           }
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 16:
-        printf("* Function Name: DeleteChild\n");
-        printf("* Parameter: BiTree &T, int index, int LR\n");
-        printf("* Return: status\n");
-        printf("* Use: delete the child tree of the given node\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: DeleteChild\n");
+        // printf("* Parameter: BiTree &T, int index, int LR\n");
+        // printf("* Return: status\n");
+        // printf("* Use: delete the child tree of the given node\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -990,29 +1028,31 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
           int index = 0;
           int LR = 0;
-          cout << "please insert the desiredc index" << endl;
+          cout << "输入c：" << endl;
           cin >> index;
-          cout << "L or R? (L = 0 R = 1)" << endl;
+          cout << "L: 0, R: 1：" << endl;
           cin >> LR;
           if (DeleteChild(*head, index, LR) == OK) {
-            cout << "delete complete." << endl;
+            cout << "删除成功" << endl;
           } else {
-            cout << "Sorry, we encounter an error." << endl;
+            cout << "出错." << endl;
           }
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 17:
-        printf("* Function Name: PreOrderTraverse\n");
-        printf("* Parameter:const BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: pre order traverse the tree.\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: PreOrderTraverse\n");
+        // printf("* Parameter:const BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: pre order traverse the tree.\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -1020,20 +1060,22 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
-          cout << "The pre-order traverse of the tree" << tree_index << " is:" << endl;
+          // cout <<  << tree_index << " is:" << endl;
           PreOrderTraverse(*head);
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 18:
-        printf("* Function Name: InOrderTraverse\n");
-        printf("* Parameter:const BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: in order traverse the tree.\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: InOrderTraverse\n");
+        // printf("* Parameter:const BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: in order traverse the tree.\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -1041,19 +1083,21 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
-          cout << "The in-order traverse of the tree" << tree_index << " is:" << endl;
+          // cout << "The in-order traverse of the tree" << tree_index << " is:" << endl;
           InOrderTraverse(*head);
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 19:
-        printf("* Parameter:const BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: in order traverse the tree.\n");
-        printf("please enter the id of the tree:");
+        // printf("* Parameter:const BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: in order traverse the tree.\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -1061,20 +1105,22 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
-          cout << "The post-order traverse of the tree" << tree_index << " is:" << endl;
+          // cout << "The post-order traverse of the tree" << tree_index << " is:" << endl;
           PostOrderTraverse(*head);
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 20:
-        printf("* Function Name: LevelOrderTraverse\n");
-        printf("* Parameter:const BiTree &T\n");
-        printf("* Return: Status(int)\n");
-        printf("* Use: level order traverse the tree.\n");
-        printf("please enter the id of the tree:");
+        // printf("* Function Name: LevelOrderTraverse\n");
+        // printf("* Parameter:const BiTree &T\n");
+        // printf("* Return: Status(int)\n");
+        // printf("* Use: level order traverse the tree.\n");
+        printf("输入树的Id：\n");
         scanf("%d", &tree_index);
         while (head != NULL) {
           if (head->TreeID == tree_index)
@@ -1082,21 +1128,25 @@ int main() {
           head = head->next;
         }
         if (head == NULL) {
-          printf("Error, the tree %d does not exist.\n", tree_index);
+          printf("Id为%d的树不存在！\n", tree_index);
           head = L;
         } else {
-          cout << "The level-order traverse of the tree" << tree_index << " is:" << endl;
+          // cout << "The level-order traverse of the tree" << tree_index << " is:" << endl;
           LevelOrderTraverse(*head);
         }
         head = L;
+        getchar();
+        getchar();
         break;
       case 0:
-        cout << "Thanks for using.";
+        cout << "欢迎下次再使用本系统！\n";
         break;
       default:
-        cout << "No such selection.";
+        cout << "无效选项！\n";
+        getchar();
+        getchar();
         break;
     }
-    SaveData(head);
   }
+  SaveData(head);
 }
