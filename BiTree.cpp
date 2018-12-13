@@ -516,8 +516,8 @@ int main() {
     switch (selection) {
       case -1:
         while (head != NULL) {
-          printf("TreeID:%d\tTreelength:%d\t", head->TreeID, head->length);
-          cout << "Preorder Traverse: ";
+          printf("Id为%d\t的树长度为:%d\t", head->TreeID, head->length);
+          cout << "先序遍历结果:";
           PreOrderTraverse(*head);
           cout << endl;
           head = head->next;
