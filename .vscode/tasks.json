@@ -13,7 +13,7 @@
         "-g",
         "${workspaceFolder}/List1.cpp",
         "-o",
-        "${workspaceFolder}/build/List1.exe",
+        "${workspaceFolder}/build/List1.exe"
       ],
       "problemMatcher": []
     },
@@ -27,6 +27,19 @@
         "${workspaceFolder}/List2.cpp",
         "-o",
         "${workspaceFolder}/build/List2.exe"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "build \"BiTree\"",
+      "type": "shell",
+      "command": "C:\\Program Files\\mingw-w64\\mingw64\\bin\\g++.exe",
+      "group": "build",
+      "args": [
+        "-g",
+        "${workspaceFolder}/BiTree.cpp",
+        "-o",
+        "${workspaceFolder}/build/BiTree.exe"
       ],
       "problemMatcher": []
     }
