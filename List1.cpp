@@ -24,11 +24,6 @@ struct SqList {  //顺序表（顺序结构）的定义
   ElemType* elem;
   size_t length;
   size_t listSize;
-  bool operator==(SqList L2) {
-    return L2.elem == this->elem &&
-           L2.length == this->length &&
-           L2.listSize == this->listSize;
-  }
 };
 
 /*-----page 19 on textbook ---------*/
@@ -66,7 +61,7 @@ int main(void) {
     printf("                         16. ChangeList\n");
     printf("                         17. CurrentList\n");
     printf("-------------------------------------------------\n");
-    printf("请选择你的操作[0~12]:");
+    printf("请选择你的操作[0~17]:");
     scanf("%d", &op);
     switch (op) {
       case 1:
