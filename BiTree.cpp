@@ -523,6 +523,9 @@ int main() {
           head = head->next;
         }
         head = L;
+
+        getchar();
+        getchar();
         break;
       case 1:
         // printf("* Function Name: InitBiTree\n");
@@ -1147,6 +1150,6 @@ int main() {
         getchar();
         break;
     }
+    SaveData(head);
   }
-  SaveData(head);
 }
