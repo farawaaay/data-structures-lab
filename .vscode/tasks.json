@@ -37,9 +37,9 @@
       "group": "build",
       "args": [
         "-g",
-        "${workspaceFolder}/BiTree.cpp",
+        "'${workspaceFolder}/MyBiTree.cpp'",
         "-o",
-        "${workspaceFolder}/build/BiTree.exe"
+        "'${workspaceFolder}/build/BiTree.exe'"
       ],
       "problemMatcher": []
     }
