@@ -44,6 +44,19 @@
       "problemMatcher": []
     },
     {
+      "label": "build \"BiTree\" macOS",
+      "type": "shell",
+      "command": "g++-8",
+      "group": "build",
+      "args": [
+        "-g",
+        "'${workspaceFolder}/MyBiTree.cpp'",
+        "-o",
+        "'${workspaceFolder}/build/MyBiTree'"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "build \"BiTree\" Linux",
       "type": "shell",
       "command": "g++",

@@ -537,7 +537,7 @@ int main() {
   vector<BiTree> trees = {};
   while (selection != 0) {
     system("clear");
-    printf("\n\n");
+    printf("\n");
     printf("   Menu for Linear Table On Sequence Structure  \n");
     printf("------------------------------------------------\n");
     printf("      1.InitBiTree       11.LeftChild           \n");
@@ -573,212 +573,6 @@ int main() {
           trees.push_back(BiTree());
           InitBiTree(trees.back());
           printf("创建成功!当前id范围:[0, %lu]\n", trees.size() - 1);
-          break;
-        case 2:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              DestroyBiTree(trees[I]);
-              trees.erase(trees.begin() + I);
-              printf("删除成功!\n");
-              break;
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 3:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              vector<ElemType> elems = {};
-              while (true) {
-                int null;
-                char value;
-                size_t index;
-                printf("输入节点是否为空节点 [Y/N/END, 1/0/-1]:\n");
-                if (scanf("%d", &null) != 0 && (null == 0 || null == 1)) {
-                  if (null == 0) {
-                    printf("输入节点的index和value: ");
-                    if (scanf("%lu %c", &index, &value) != 0) {
-                      elems.push_back({value, index, null == 1});
-                    }
-                  } else {
-                    elems.push_back(ElemType());
-                  }
-                } else
-                  break;
-              }
-
-              CreateBiTree(trees[I], elems);
-              printf("创建成功!\n");
-              print_ascii_tree(trees[I].root);
-              break;
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 4:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              ClearBiTree(trees[I]);
-              printf("清空成功!\n");
-              break;
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 5:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("是否为空: %c\n", BiTreeEmpty(trees[I]) == true ? 'T' : 'F');
-              break;
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 6:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("树的深度: %d\n", BiTreeDepth(trees[I]));
-              break;
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 7:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              _PrintNode(Root(trees[I]));
-              break;
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 9:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("输入节点的index:");
-              if (scanf("%lu", &index) != 0) {
-                printf("输入节点的index和value:");
-                size_t newIndex;
-                char value;
-                if (scanf("%lu %c", &newIndex, &value) != 0) {
-                  ElemType elem = {value, newIndex, false};
-                  Assign(trees[I], index, elem);
-                  break;
-                }
-              }
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 8:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("输入节点的index:");
-              if (scanf("%lu", &index) != 0) {
-                _PrintNode(_Find(trees[I], index));
-                break;
-              }
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("输入节点的index:");
-              if (scanf("%lu", &index) != 0) {
-                switch (selection) {
-                  case 10:
-                    _PrintNode(Parent(trees[I], index));
-                  case 11:
-                    _PrintNode(LeftChild(trees[I], index));
-                  case 12:
-                    _PrintNode(RightChild(trees[I], index));
-                  case 13:
-                    _PrintNode(LeftSibling(trees[I], index));
-                  case 14:
-                    _PrintNode(RightSibling(trees[I], index));
-                }
-                break;
-              }
-            }
-          }
-          printf("无效输入\n");
-          break;
-
-        case 15:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("输入节点的index:");
-              if (scanf("%lu", &index) != 0) {
-                printf("左还是右 [L/R, 0/1]:");
-                int LR;
-                if (scanf("%d", &LR) != 0) {
-                  printf("树c的id:");
-                  size_t c_tree;
-                  if (scanf("%lu", &c_tree) != 0) {
-                    InsertChild(trees[I], index, LR == 0, trees[c_tree]);
-                    trees.erase(trees.begin() + c_tree);
-                    printf("操作成功!\n");
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 16:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            if (I <= trees.size() - 1) {
-              printf("输入节点的index:");
-              if (scanf("%lu", &index) != 0) {
-                printf("左还是右 [L/R, 0/1]:");
-                int LR;
-                if (scanf("%d", &LR) != 0) {
-                  DeleteChild(trees[I], index, LR == 0);
-                  printf("操作成功!\n");
-                  break;
-                }
-              }
-            }
-          }
-          printf("无效输入\n");
-          break;
-        case 17:
-        case 18:
-        case 19:
-        case 20:
-          printf("输入这棵树的Id:");
-          if (scanf("%lu", &I) != 0) {
-            switch (selection) {
-              case 17:
-                PreOrderTraverse(trees[I], _PrintNode);
-              case 18:
-                InOrderTraverse(trees[I], _PrintNode);
-              case 19:
-                PostOrderTraverse(trees[I], _PrintNode);
-              case 20:
-                LevelOrderTraverse(trees[I], _PrintNode);
-            }
-            break;
-          }
-          printf("无效输入\n");
           break;
         case 21: {
           size_t tree_s = trees.size();
@@ -837,7 +631,141 @@ int main() {
           printf("欢迎下次再使用本系统！\n");
           break;
         default:
-          printf("无效选项！\n");
+          if (selection >= 2 && selection <= 20) {
+            printf("输入这棵树的Id:");
+            if (scanf("%lu", &I) != 0) {
+              if (I <= trees.size() - 1) {
+                switch (selection) {
+                  case 2:
+
+                    DestroyBiTree(trees[I]);
+                    trees.erase(trees.begin() + I);
+                    printf("删除成功!\n");
+                    break;
+
+                  case 3: {
+                    vector<ElemType> elems = {};
+                    while (true) {
+                      int null;
+                      char value;
+                      size_t index;
+                      printf("输入节点是否为空节点 [Y/N/END, 1/0/-1]:\n");
+                      if (scanf("%d", &null) != 0 && (null == 0 || null == 1)) {
+                        if (null == 0) {
+                          printf("输入节点的index和value: ");
+                          if (scanf("%lu %c", &index, &value) != 0) {
+                            elems.push_back({value, index, null == 1});
+                          }
+                        } else {
+                          elems.push_back(ElemType());
+                        }
+                      } else
+                        break;
+                    }
+                    CreateBiTree(trees[I], elems);
+                    printf("创建成功!\n");
+                    print_ascii_tree(trees[I].root);
+                    break;
+                  }
+                  case 4:
+                    ClearBiTree(trees[I]);
+                    printf("清空成功!\n");
+                    break;
+                  case 5:
+                    printf("是否为空: %c\n", BiTreeEmpty(trees[I]) == true ? 'T' : 'F');
+                    break;
+                  case 6:
+                    printf("树的深度: %d\n", BiTreeDepth(trees[I]));
+                    break;
+                  case 7:
+                    _PrintNode(Root(trees[I]));
+                    break;
+                  case 9:
+                    printf("输入节点的index:");
+                    if (scanf("%lu", &index) != 0) {
+                      printf("输入节点的index和value:");
+                      size_t newIndex;
+                      char value;
+                      if (scanf("%lu %c", &newIndex, &value) != 0) {
+                        ElemType elem = {value, newIndex, false};
+                        Assign(trees[I], index, elem);
+                        break;
+                      }
+                    }
+                  case 8:
+                    printf("输入节点的index:");
+                    if (scanf("%lu", &index) != 0) {
+                      _PrintNode(_Find(trees[I], index));
+                      break;
+                    }
+                  case 10:
+                  case 11:
+                  case 12:
+                  case 13:
+                  case 14:
+                    printf("输入节点的index:");
+                    if (scanf("%lu", &index) != 0) {
+                      switch (selection) {
+                        case 10:
+                          _PrintNode(Parent(trees[I], index));
+                        case 11:
+                          _PrintNode(LeftChild(trees[I], index));
+                        case 12:
+                          _PrintNode(RightChild(trees[I], index));
+                        case 13:
+                          _PrintNode(LeftSibling(trees[I], index));
+                        case 14:
+                          _PrintNode(RightSibling(trees[I], index));
+                      }
+                      break;
+                    }
+                  case 15:
+                    printf("输入节点的index:");
+                    if (scanf("%lu", &index) != 0) {
+                      printf("左还是右 [L/R, 0/1]:");
+                      int LR;
+                      if (scanf("%d", &LR) != 0) {
+                        printf("树c的id:");
+                        size_t c_tree;
+                        if (scanf("%lu", &c_tree) != 0) {
+                          InsertChild(trees[I], index, LR == 0, trees[c_tree]);
+                          trees.erase(trees.begin() + c_tree);
+                          printf("操作成功!\n");
+                          break;
+                        }
+                      }
+                    }
+                  case 16:
+                    printf("输入节点的index:");
+                    if (scanf("%lu", &index) != 0) {
+                      printf("左还是右 [L/R, 0/1]:");
+                      int LR;
+                      if (scanf("%d", &LR) != 0) {
+                        DeleteChild(trees[I], index, LR == 0);
+                        printf("操作成功!\n");
+                        break;
+                      }
+                    }
+                  case 17:
+                    PreOrderTraverse(trees[I], _PrintNode);
+                    break;
+                  case 18:
+                    InOrderTraverse(trees[I], _PrintNode);
+                    break;
+                  case 19:
+                    PostOrderTraverse(trees[I], _PrintNode);
+                    break;
+                  case 20:
+                    LevelOrderTraverse(trees[I], _PrintNode);
+                    break;
+                }
+
+                break;
+              }
+            }
+
+            printf("无效输入\n");
+          }
           break;
       }
     } catch (Error e) {

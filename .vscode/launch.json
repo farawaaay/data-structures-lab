@@ -68,6 +68,27 @@
       "preLaunchTask": "build \"BiTree\""
     },
     {
+      "name": "(gdb) BiTree macOS",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/MyBiTree",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build/",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/local/bin/gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "build \"BiTree\" macOS"
+    },
+    {
       "name": "(gdb) BiTree Linux",
       "type": "cppdbg",
       "request": "launch",
