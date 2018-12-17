@@ -25,7 +25,6 @@ struct BiTreeNode {
 };
 
 struct BiTree {
-  size_t length = 0;
   bool init = false;
   BiTreeNode* root = NULL;
 };
@@ -38,9 +37,8 @@ enum TraverseMethod {
 };
 
 enum Error {
-  OK,
-  EXISTS,
-  NOT_EXISTS,
+  INIT,
+  NOT_INIT,
   WRONG_DEF,
   NO_SUCH_NODE,
 };
@@ -74,7 +72,7 @@ status InitBiTree(BiTree& T) {
     T.init = true;
 
   } else {
-    throw Error::EXISTS;
+    throw Error::INIT;
   }
 }
 
@@ -83,28 +81,37 @@ status DestroyBiTree(BiTree& T) {
     ClearBiTree(T);
     T.init = false;
   } else {
-    throw Error::NOT_EXISTS;
+    throw Error::NOT_INIT;
   }
 }
 
 status CreateBiTree(BiTree& T, vector<ElemType> def) {
-  if (def.size() == 0) {
+  if (!T.init)
+    throw Error::NOT_INIT;
+  if (def.size() == 0)
     throw Error::WRONG_DEF;
-  }
 
-  function<void(BiTreeNode*, size_t, size_t)> Create = [&](BiTreeNode* n, size_t s, size_t e) -> void {
-    n->data = def[s];
-    size_t v = (e - s) - (e - s) / 2;
-    if (s + 1 <= v + s && def[s + 1].null == false)
-      Create(n->left = new BiTreeNode(), s + 1, v + s);
-    if (v + s + 1 <= e && def[v + s + 1].null == false)
-      Create(n->right = new BiTreeNode(), v + s + 1, e);
+  size_t i = 0;
+  size_t l = def.size();
+
+  function<void(BiTreeNode*&)> Create = [&](BiTreeNode*& n) -> void {
+    if (i > l)
+      return;
+    ElemType data = def[i++];
+    if (data.null == true)
+      return;
+    (n = new BiTreeNode())->data = data;
+    Create(n->left);
+    Create(n->right);
   };
 
-  Create(T.root = new BiTreeNode(), 0, def.size() - 1);
+  Create(T.root);
 }
 
 status ClearBiTree(BiTree& T) {
+  if (!T.init)
+    throw Error::NOT_INIT;
+
   PostOrderTraverse(T, [](BiTreeNode* pn) -> void {
     delete pn;
   });
@@ -112,14 +119,20 @@ status ClearBiTree(BiTree& T) {
 }
 
 status Value(const BiTree& T, size_t index, ElemType& value) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   value = _Find(T, index)->data;
 }
 
-status Assign(BiTree& T, int index, ElemType& value) {
+status Assign(BiTree& T, size_t index, ElemType& value) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   _Find(T, index)->data = value;
 }
 
 BiTreeNode* _Find(const BiTree& T, size_t index) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   bool stop = false;
   BiTreeNode* pRtn = NULL;
   PreOrderTraverse(T, [&](BiTreeNode* pn) -> void {
@@ -139,10 +152,14 @@ BiTreeNode* _Find(const BiTree& T, size_t index) {
 }
 
 void _PrintNode(BiTreeNode* n) {
-  printf("(%d,%c)\n", n->data.index, n->data.value);
+  if (!n)
+    throw Error::NO_SUCH_NODE;
+  printf("(%lu,%c)\n", n->data.index, n->data.value);
 }
 
 BiTreeNode* Parent(const BiTree& T, size_t index) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   bool stop = false;
   BiTreeNode* pRtn = NULL;
   PreOrderTraverse(T, [&](BiTreeNode* pn) -> void {
@@ -180,18 +197,22 @@ BiTreeNode* LeftSibling(const BiTree& T, size_t index) {
 BiTreeNode* RightSibling(const BiTree& T, size_t index) {
   BiTreeNode* parent = Parent(T, index);
   BiTreeNode* self = _Find(T, index);
-  return parent->left == self ? NULL : parent->left;
+  return parent->right == self ? NULL : parent->right;
 }
 
 BiTreeNode* Root(const BiTree& T) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   return T.root;
 }
 
 bool BiTreeEmpty(const BiTree& T) {
-  return T.root == NULL;
+  return Root(T) == NULL;
 }
 
 int BiTreeDepth(const BiTree& T) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   function<int(BiTreeNode*)> Depth = [&](BiTreeNode* root) -> int {
     if (root == NULL)
       return 0;
@@ -219,6 +240,8 @@ status InsertChild(BiTree& T, size_t index, bool LR, BiTree& c) {
 }
 
 status DeleteChild(BiTree& T, size_t index, bool LR) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   BiTreeNode* pn = NULL;
   if (LR == true) {
     pn = _Find(T, index)->left;
@@ -237,6 +260,8 @@ status DeleteChild(BiTree& T, size_t index, bool LR) {
 }
 
 status PreOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   function<void(BiTreeNode*)> Traverse = [&](BiTreeNode* root) -> void {
     if (root == NULL)
       return;
@@ -249,6 +274,8 @@ status PreOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
 }
 
 status InOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   function<void(BiTreeNode*)> Traverse = [&](BiTreeNode* root) -> void {
     if (root == NULL)
       return;
@@ -261,6 +288,8 @@ status InOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
 }
 
 status PostOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   function<void(BiTreeNode*)> Traverse = [&](BiTreeNode* root) -> void {
     if (root == NULL)
       return;
@@ -273,6 +302,8 @@ status PostOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
 }
 
 status LevelOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
+  if (!T.init)
+    throw Error::NOT_INIT;
   queue<BiTreeNode*> q;
   q.push(T.root);
   while (q.size() != 0) {
@@ -331,7 +362,7 @@ asciinode* build_ascii_tree_recursive(BiTreeNode* t) {
     node->right->parent_dir = 1;
   }
 
-  sprintf(node->label, "(%d,%c)", t->data.index, t->data.value);
+  sprintf(node->label, "(%lu,%c)", t->data.index, t->data.value);
   node->lablen = strlen(node->label);
 
   return node;
@@ -502,47 +533,375 @@ void print_ascii_tree(BiTreeNode* t) {
 }
 
 int main() {
-  BiTree T1;
-  InitBiTree(T1);
-  CreateBiTree(T1, {
-                       ElemType({'a', 0, false}),
-                       ElemType({'g', 1, false}),
-                       ElemType({'a', 2, false}),
-                       ElemType({'g', 3, false}),
-                       ElemType({'y', 4, false}),
-                       ElemType({'1', 5, false}),
-                       ElemType({'@', 6, false}),
-                       ElemType({'t', 7, false}),
-                       ElemType({'i', 8, false}),
-                       ElemType({'p', 9, false}),
-                   });
+  int selection = -1;
+  size_t I = -1;
+  size_t index = -1;
+  vector<BiTree> trees = {};
+  while (selection != 0) {
+    system("clear");
+    printf("\n\n");
+    printf("   Menu for Linear Table On Sequence Structure  \n");
+    printf("------------------------------------------------\n");
+    printf("      1.InitBiTree       11.LeftChild           \n");
+    printf("      2.DestroyBiTree    12.RightChild          \n");
+    printf("      3.CreateBiTree     13.LeftSibling         \n");
+    printf("      4.ClearBiTree      14.RightSibling        \n");
+    printf("      5.BiTreeEmpty      15.InsertChild         \n");
+    printf("      6.BiTreeDepth      16.DeleteChild         \n");
+    printf("      7.Root             17.PreOrderTraverse    \n");
+    printf("      8.Value            18.InOrderTraverse     \n");
+    printf("      9.Assign           19.PostOrderTraverse   \n");
+    printf("     10.Parent           20.LevelOrderTraverse  \n");
+    printf("                                                \n");
+    printf("      0.Exit             21.Write               \n");
+    printf("     -1.Debug            22.Read                \n");
+    printf("------------------------------------------------\n");
+    printf("\n");
+    printf("请选择你的操作[0~22]:");
+    scanf("%d", &selection);
+    try {
+      switch (selection) {
+        case -1:
+          I = 0;
+          for (auto tree : trees) {
+            printf("id为%lu的树:\n", I++);
+            if (!BiTreeEmpty(tree))
+              print_ascii_tree(tree.root);
+            else
+              printf("为空\n");
+          }
+          break;
+        case 1:
+          trees.push_back(BiTree());
+          InitBiTree(trees.back());
+          printf("创建成功!当前id范围:[0, %lu]\n", trees.size() - 1);
+          break;
+        case 2:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              DestroyBiTree(trees[I]);
+              trees.erase(trees.begin() + I);
+              printf("删除成功!\n");
+              break;
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 3:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              vector<ElemType> elems = {};
+              while (true) {
+                int null;
+                char value;
+                size_t index;
+                printf("输入节点是否为空节点:[Y/N/END, 1/0/-1]\n");
+                if (scanf("%d", &null) != 0 && (null == 0 || null == 1)) {
+                  if (null == 0) {
+                    printf("输入节点的index和value: ");
+                    if (scanf("%lu %c", &index, &value) != 0) {
+                      elems.push_back({value, index, null == 1});
+                    }
+                  } else {
+                    elems.push_back(ElemType());
+                  }
+                } else
+                  break;
+              }
 
-  BiTree T2;
-  InitBiTree(T2);
-  CreateBiTree(T2, {ElemType({'h', 10, false}),
-                    ElemType({'z', 11, false}),
-                    ElemType({'y', 12, false}),
-                    ElemType(),
-                    ElemType()});
+              CreateBiTree(trees[I], elems);
+              printf("创建成功!\n");
+              print_ascii_tree(trees[I].root);
+              break;
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 4:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              ClearBiTree(trees[I]);
+              printf("清空成功!\n");
+              break;
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 5:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("是否为空: %c\n", BiTreeEmpty(trees[I]) == true ? 'T' : 'F');
+              break;
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 6:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("树的深度: %d\n", BiTreeDepth(trees[I]));
+              break;
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 7:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              _PrintNode(Root(trees[I]));
+              break;
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 9:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("输入节点的index:");
+              if (scanf("%lu", &index) != 0) {
+                printf("输入节点的index和value:");
+                size_t newIndex;
+                char value;
+                if (scanf("%lu %c", &newIndex, &value) != 0) {
+                  ElemType elem = {value, newIndex, false};
+                  Assign(trees[I], index, elem);
+                  break;
+                }
+              }
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 8:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("输入节点的index:");
+              if (scanf("%lu", &index) != 0) {
+                _PrintNode(_Find(trees[I], index));
+                break;
+              }
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("输入节点的index:");
+              if (scanf("%lu", &index) != 0) {
+                switch (selection) {
+                  case 10:
+                    _PrintNode(Parent(trees[I], index));
+                  case 11:
+                    _PrintNode(LeftChild(trees[I], index));
+                  case 12:
+                    _PrintNode(RightChild(trees[I], index));
+                  case 13:
+                    _PrintNode(LeftSibling(trees[I], index));
+                  case 14:
+                    _PrintNode(RightSibling(trees[I], index));
+                }
+                break;
+              }
+            }
+          }
+          printf("无效输入\n");
+          break;
 
-  // print_ascii_tree(T1.root);
-  // print_ascii_tree(T2.root);
-  InsertChild(T1, 6, true, T2);
-  print_ascii_tree(T1.root);
-  // ClearBiTree(T1);
-  // print_ascii_tree(T1.root);
+        case 15:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("输入节点的index:");
+              if (scanf("%lu", &index) != 0) {
+                printf("左还是右:[L/R, 0/1]");
+                int LR;
+                if (scanf("%d", &LR) != 0) {
+                  printf("树c的id:");
+                  size_t c_tree;
+                  if (scanf("%lu", &c_tree) != 0) {
+                    InsertChild(trees[I], index, LR == 0, trees[c_tree]);
+                  }
+                }
+              }
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 16:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            if (I <= trees.size() - 1) {
+              printf("输入节点的index:");
+              if (scanf("%lu", &index) != 0) {
+                printf("左还是右:[L/R, 0/1]");
+                int LR;
+                if (scanf("%d", &LR) != 0) {
+                  DeleteChild(trees[I], index, LR == 0);
+                }
+              }
+            }
+          }
+          printf("无效输入\n");
+          break;
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+          printf("输入这棵树的Id:");
+          if (scanf("%lu", &I) != 0) {
+            switch (selection) {
+              case 17:
+                PreOrderTraverse(trees[I], _PrintNode);
+              case 18:
+                InOrderTraverse(trees[I], _PrintNode);
+              case 19:
+                PostOrderTraverse(trees[I], _PrintNode);
+              case 20:
+                LevelOrderTraverse(trees[I], _PrintNode);
+            }
+            break;
+          }
+          printf("无效输入\n");
+          break;
+        case 21: {
+          size_t tree_s = trees.size();
+          if (tree_s <= 0) {
+            printf("没有树!\n");
+            break;
+          }
+          FILE* fp = fopen("trees", "w");
+          fwrite(&tree_s, sizeof(size_t), 1, fp);
+          for (auto tree : trees) {
+            vector<ElemType> elems = {};
+            function<void(BiTreeNode*)> Traverse = [&](BiTreeNode* root) -> void {
+              if (root == NULL) {
+                elems.push_back(ElemType());
+                return;
+              }
 
-  printf("%c\n", Parent(T1, 9)->data.value);
-  printf("%c\n", LeftSibling(T1, 9)->data.value);
-  printf("%c\n", RightSibling(T1, 9)->data.value);
-  // printf("%c\n", LeftChild(T1, 12));
-  // printf("%c\n", RightChild(T1, 12));
-  printf("%d\n", BiTreeDepth(T1));
+              elems.push_back(root->data);
+              Traverse(root->left);
+              Traverse(root->right);
+            };
 
-  PreOrderTraverse(T1, _PrintNode);
-  printf("\n");
-  InOrderTraverse(T1, _PrintNode);
-  printf("\n");
-  LevelOrderTraverse(T1, _PrintNode);
-  printf("\n");
+            Traverse(tree.root);
+            size_t s = elems.size();
+            fwrite(&s, sizeof(size_t), 1, fp);
+            for (auto elem : elems) {
+              fwrite(&elem, sizeof(ElemType), 1, fp);
+            }
+          }
+          fclose(fp);
+          break;
+        }
+        case 22: {
+          trees = {};
+          FILE* fp = fopen("trees", "r");
+          size_t tree_s;
+          fread(&tree_s, sizeof(size_t), 1, fp);
+          for (size_t i = 0; i < tree_s; i++) {
+            size_t s;
+            fread(&s, sizeof(size_t), 1, fp);
+            vector<ElemType> elems = {};
+            for (size_t i = 0; i < s; i++) {
+              ElemType* elem = new ElemType();
+              fread(elem, sizeof(ElemType), 1, fp);
+              elems.push_back(*elem);
+            }
+            BiTree T;
+            InitBiTree(T);
+            CreateBiTree(T, elems);
+            trees.push_back(T);
+          }
+          fclose(fp);
+          break;
+        }
+        case 0:
+          printf("欢迎下次再使用本系统！\n");
+          break;
+        default:
+          printf("无效选项！\n");
+          break;
+      }
+    } catch (Error e) {
+      switch (e) {
+        case Error::NO_SUCH_NODE:
+          printf("节点未找到!\n");
+        case Error::WRONG_DEF:
+          printf("definition错误!\n");
+        case Error::NOT_INIT:
+          printf("未初始化!\n");
+        default:
+          printf("未知错误!\n");
+      }
+    }
+    getchar();
+    getchar();
+  }
 }
+
+// BiTree T1;
+// InitBiTree(T1);
+// CreateBiTree(T1, {
+//                      ElemType({'a', 0, false}),
+//                      ElemType({'b', 1, false}),
+//                      ElemType({'c', 2, false}),
+//                      ElemType(),
+//                      ElemType(),
+//                      ElemType({'d', 4, false}),
+//                      ElemType({'e', 5, false}),
+//                      ElemType(),
+//                      ElemType(),
+//                      ElemType({'f', 6, false}),
+//                      ElemType(),
+//                      ElemType(),
+//                      ElemType({'g', 7, false}),
+//                      ElemType(),
+//                      ElemType({'h', 8, false}),
+//                      ElemType(),
+//                      ElemType({'i', 9, false}),
+//                      ElemType(),
+//                      ElemType(),
+//                  });
+
+// BiTree T2;
+// InitBiTree(T2);
+// CreateBiTree(T2, {ElemType({'h', 10, false}),
+//                   ElemType({'z', 11, false}),
+//                   ElemType({'y', 12, false}),
+//                   ElemType(),
+//                   ElemType()});
+
+// print_ascii_tree(T1.root);
+// InsertChild(T1, 6, true, T2);
+// print_ascii_tree(T1.root);
+// // ClearBiTree(T1);
+// // print_ascii_tree(T1.root);
+
+// printf("%c\n", Parent(T1, 4)->data.value);
+// printf("%c\n", LeftSibling(T1, 4)->data.value);
+// printf("%c\n", RightSibling(T1, 4)->data.value);
+// // printf("%c\n", LeftChild(T1, 12));
+// // printf("%c\n", RightChild(T1, 12));
+// printf("%d\n", BiTreeDepth(T1));
+
+// PreOrderTraverse(T1, _PrintNode);
+// printf("\n");
+// InOrderTraverse(T1, _PrintNode);
+// printf("\n");
+// LevelOrderTraverse(T1, _PrintNode);
+// printf("\n");

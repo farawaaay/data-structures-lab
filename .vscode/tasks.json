@@ -42,6 +42,20 @@
         "'${workspaceFolder}/build/BiTree.exe'"
       ],
       "problemMatcher": []
+    },
+    {
+      "label": "build \"BiTree\" Linux",
+      "type": "shell",
+      "command": "g++",
+      "group": "build",
+      "args": [
+        "-g",
+        "'${workspaceFolder}/MyBiTree.cpp'",
+        "-o",
+        "'/home/faraway/MyBiTree'",
+        "-Wall"
+      ],
+      "problemMatcher": []
     }
   ]
 }

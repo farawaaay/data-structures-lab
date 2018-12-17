@@ -66,6 +66,27 @@
         }
       ],
       "preLaunchTask": "build \"BiTree\""
+    },
+    {
+      "name": "(gdb) BiTree Linux",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "/home/faraway/MyBiTree",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/build/",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "preLaunchTask": "build \"BiTree\" Linux"
     }
   ]
 }
