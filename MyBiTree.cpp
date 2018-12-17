@@ -637,12 +637,10 @@ int main() {
               if (I <= trees.size() - 1) {
                 switch (selection) {
                   case 2:
-
                     DestroyBiTree(trees[I]);
                     trees.erase(trees.begin() + I);
                     printf("删除成功!\n");
                     break;
-
                   case 3: {
                     vector<ElemType> elems = {};
                     while (true) {
@@ -689,6 +687,7 @@ int main() {
                       if (scanf("%lu %c", &newIndex, &value) != 0) {
                         ElemType elem = {value, newIndex, false};
                         Assign(trees[I], index, elem);
+                        printf("操作成功!\n");
                         break;
                       }
                     }
@@ -708,42 +707,43 @@ int main() {
                       switch (selection) {
                         case 10:
                           _PrintNode(Parent(trees[I], index));
+                          break;
                         case 11:
                           _PrintNode(LeftChild(trees[I], index));
+                          break;
                         case 12:
                           _PrintNode(RightChild(trees[I], index));
+                          break;
                         case 13:
                           _PrintNode(LeftSibling(trees[I], index));
+                          break;
                         case 14:
                           _PrintNode(RightSibling(trees[I], index));
+                          break;
                       }
                       break;
                     }
                   case 15:
-                    printf("输入节点的index:");
-                    if (scanf("%lu", &index) != 0) {
-                      printf("左还是右 [L/R, 0/1]:");
-                      int LR;
-                      if (scanf("%d", &LR) != 0) {
-                        printf("树c的id:");
-                        size_t c_tree;
-                        if (scanf("%lu", &c_tree) != 0) {
-                          InsertChild(trees[I], index, LR == 0, trees[c_tree]);
-                          trees.erase(trees.begin() + c_tree);
-                          printf("操作成功!\n");
-                          break;
-                        }
-                      }
-                    }
                   case 16:
                     printf("输入节点的index:");
                     if (scanf("%lu", &index) != 0) {
                       printf("左还是右 [L/R, 0/1]:");
                       int LR;
                       if (scanf("%d", &LR) != 0) {
-                        DeleteChild(trees[I], index, LR == 0);
-                        printf("操作成功!\n");
-                        break;
+                        if (selection == 15) {
+                          printf("树c的id:");
+                          size_t c_tree;
+                          if (scanf("%lu", &c_tree) != 0) {
+                            InsertChild(trees[I], index, LR == 0, trees[c_tree]);
+                            trees.erase(trees.begin() + c_tree);
+                            printf("操作成功!\n");
+                            break;
+                          }
+                        } else {
+                          DeleteChild(trees[I], index, LR == 0);
+                          printf("操作成功!\n");
+                          break;
+                        }
                       }
                     }
                   case 17:
@@ -771,13 +771,17 @@ int main() {
     } catch (Error e) {
       switch (e) {
         case Error::NO_SUCH_NODE:
-          printf("节点未找到!\n");
+          printf("该节点不存在!\n");
+          break;
         case Error::WRONG_DEF:
           printf("definition错误!\n");
+          break;
         case Error::NOT_INIT:
           printf("未初始化!\n");
+          break;
         default:
           printf("未知错误!\n");
+          break;
       }
     }
     getchar();
