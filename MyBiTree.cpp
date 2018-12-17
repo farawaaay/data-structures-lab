@@ -242,21 +242,19 @@ status InsertChild(BiTree& T, size_t index, bool LR, BiTree& c) {
 status DeleteChild(BiTree& T, size_t index, bool LR) {
   if (!T.init)
     throw Error::NOT_INIT;
-  BiTreeNode* pn = NULL;
-  if (LR == true) {
-    pn = _Find(T, index)->left;
-  } else {
-    pn = _Find(T, index)->right;
-  }
-  function<void(BiTreeNode*)> Traverse = [&](BiTreeNode* root) -> void {
+  function<void(BiTreeNode*&)> Traverse = [&](BiTreeNode*& root) -> void {
     if (root == NULL || root->data.null == true)
       return;
     Traverse(root->left);
     Traverse(root->right);
     delete root;
+    root = NULL;
   };
-
-  Traverse(pn);
+  if (LR == true) {
+    Traverse(_Find(T, index)->left);
+  } else {
+    Traverse(_Find(T, index)->right);
+  }
 }
 
 status PreOrderTraverse(const BiTree& T, function<void(BiTreeNode*)> Visit) {
@@ -597,7 +595,7 @@ int main() {
                 int null;
                 char value;
                 size_t index;
-                printf("输入节点是否为空节点:[Y/N/END, 1/0/-1]\n");
+                printf("输入节点是否为空节点 [Y/N/END, 1/0/-1]:\n");
                 if (scanf("%d", &null) != 0 && (null == 0 || null == 1)) {
                   if (null == 0) {
                     printf("输入节点的index和value: ");
@@ -727,13 +725,16 @@ int main() {
             if (I <= trees.size() - 1) {
               printf("输入节点的index:");
               if (scanf("%lu", &index) != 0) {
-                printf("左还是右:[L/R, 0/1]");
+                printf("左还是右 [L/R, 0/1]:");
                 int LR;
                 if (scanf("%d", &LR) != 0) {
                   printf("树c的id:");
                   size_t c_tree;
                   if (scanf("%lu", &c_tree) != 0) {
                     InsertChild(trees[I], index, LR == 0, trees[c_tree]);
+                    trees.erase(trees.begin() + c_tree);
+                    printf("操作成功!\n");
+                    break;
                   }
                 }
               }
@@ -747,10 +748,12 @@ int main() {
             if (I <= trees.size() - 1) {
               printf("输入节点的index:");
               if (scanf("%lu", &index) != 0) {
-                printf("左还是右:[L/R, 0/1]");
+                printf("左还是右 [L/R, 0/1]:");
                 int LR;
                 if (scanf("%d", &LR) != 0) {
                   DeleteChild(trees[I], index, LR == 0);
+                  printf("操作成功!\n");
+                  break;
                 }
               }
             }
