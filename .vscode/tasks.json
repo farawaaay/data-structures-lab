@@ -37,7 +37,7 @@
       "group": "build",
       "args": [
         "-g",
-        "'${workspaceFolder}/MyBiTree.cpp'",
+        "'${workspaceFolder}/BiTree.cpp'",
         "-o",
         "'${workspaceFolder}/build/BiTree.exe'"
       ],
@@ -50,9 +50,9 @@
       "group": "build",
       "args": [
         "-g",
-        "'${workspaceFolder}/MyBiTree.cpp'",
+        "'${workspaceFolder}/BiTree.cpp'",
         "-o",
-        "'${workspaceFolder}/build/MyBiTree'"
+        "'${workspaceFolder}/build/BiTree'"
       ],
       "problemMatcher": []
     },
@@ -63,9 +63,9 @@
       "group": "build",
       "args": [
         "-g",
-        "'${workspaceFolder}/MyBiTree.cpp'",
+        "'${workspaceFolder}/BiTree.cpp'",
         "-o",
-        "'/home/faraway/MyBiTree'",
+        "'/home/faraway/BiTree'",
         "-Wall"
       ],
       "problemMatcher": []

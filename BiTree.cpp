@@ -603,6 +603,7 @@ int main() {
             }
           }
           fclose(fp);
+          printf("写出成功!\n");
           break;
         }
         case 22: {
@@ -625,6 +626,7 @@ int main() {
             trees.push_back(T);
           }
           fclose(fp);
+          printf("读取成功!\n");
           break;
         }
         case 0:
