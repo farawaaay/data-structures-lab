@@ -536,7 +536,7 @@ int main() {
   size_t index = -1;
   vector<BiTree> trees = {};
   while (selection != 0) {
-    system("clear");
+    system("cls");
     printf("\n");
     printf("   Menu for Linear Table On Sequence Structure  \n");
     printf("------------------------------------------------\n");
@@ -555,29 +555,29 @@ int main() {
     printf("     -1.Debug            22.Read                \n");
     printf("------------------------------------------------\n");
     printf("\n");
-    printf("è¯·é€‰æ‹©ä½ çš„æ“ä½œ[0~22]:");
+    printf("ÇëÑ¡ÔñÄãµÄ²Ù×÷[0~22]:");
     scanf("%d", &selection);
     try {
       switch (selection) {
         case -1:
           I = 0;
           for (auto tree : trees) {
-            printf("idä¸º%luçš„æ ‘:\n", I++);
+            printf("idÎª%luµÄÊ÷:\n", I++);
             if (!BiTreeEmpty(tree))
               print_ascii_tree(tree.root);
             else
-              printf("ä¸ºç©º\n");
+              printf("Îª¿Õ\n");
           }
           break;
         case 1:
           trees.push_back(BiTree());
           InitBiTree(trees.back());
-          printf("åˆ›å»ºæˆåŠŸ!å½“å‰idèŒƒå›´:[0, %lu]\n", trees.size() - 1);
+          printf("´´½¨³É¹¦!µ±Ç°id·¶Î§:[0, %lu]\n", trees.size() - 1);
           break;
         case 21: {
           size_t tree_s = trees.size();
           if (tree_s <= 0) {
-            printf("æ²¡æœ‰æ ‘!\n");
+            printf("Ã»ÓĞÊ÷!\n");
             break;
           }
           FILE* fp = fopen("trees", "w");
@@ -603,7 +603,7 @@ int main() {
             }
           }
           fclose(fp);
-          printf("å†™å‡ºæˆåŠŸ!\n");
+          printf("Ğ´³ö³É¹¦!\n");
           break;
         }
         case 22: {
@@ -626,22 +626,22 @@ int main() {
             trees.push_back(T);
           }
           fclose(fp);
-          printf("è¯»å–æˆåŠŸ!\n");
+          printf("¶ÁÈ¡³É¹¦!\n");
           break;
         }
         case 0:
-          printf("æ¬¢è¿ä¸‹æ¬¡å†ä½¿ç”¨æœ¬ç³»ç»Ÿï¼\n");
+          printf("»¶Ó­ÏÂ´ÎÔÙÊ¹ÓÃ±¾ÏµÍ³£¡\n");
           break;
         default:
           if (selection >= 2 && selection <= 20) {
-            printf("è¾“å…¥è¿™æ£µæ ‘çš„Id:");
+            printf("ÊäÈëÕâ¿ÃÊ÷µÄId:");
             if (scanf("%lu", &I) != 0) {
               if (I <= trees.size() - 1) {
                 switch (selection) {
                   case 2:
                     DestroyBiTree(trees[I]);
                     trees.erase(trees.begin() + I);
-                    printf("åˆ é™¤æˆåŠŸ!\n");
+                    printf("É¾³ı³É¹¦!\n");
                     break;
                   case 3: {
                     vector<ElemType> elems = {};
@@ -649,10 +649,10 @@ int main() {
                       int null;
                       char value;
                       size_t index;
-                      printf("è¾“å…¥èŠ‚ç‚¹æ˜¯å¦ä¸ºç©ºèŠ‚ç‚¹ [Y/N/END, 1/0/-1]:\n");
+                      printf("ÊäÈë½ÚµãÊÇ·ñÎª¿Õ½Úµã [Y/N/END, 1/0/-1]:\n");
                       if (scanf("%d", &null) != 0 && (null == 0 || null == 1)) {
                         if (null == 0) {
-                          printf("è¾“å…¥èŠ‚ç‚¹çš„indexå’Œvalue: ");
+                          printf("ÊäÈë½ÚµãµÄindexºÍvalue: ");
                           if (scanf("%lu %c", &index, &value) != 0) {
                             elems.push_back({value, index, null == 1});
                           }
@@ -663,38 +663,38 @@ int main() {
                         break;
                     }
                     CreateBiTree(trees[I], elems);
-                    printf("åˆ›å»ºæˆåŠŸ!\n");
+                    printf("´´½¨³É¹¦!\n");
                     print_ascii_tree(trees[I].root);
                     break;
                   }
                   case 4:
                     ClearBiTree(trees[I]);
-                    printf("æ¸…ç©ºæˆåŠŸ!\n");
+                    printf("Çå¿Õ³É¹¦!\n");
                     break;
                   case 5:
-                    printf("æ˜¯å¦ä¸ºç©º: %c\n", BiTreeEmpty(trees[I]) == true ? 'T' : 'F');
+                    printf("ÊÇ·ñÎª¿Õ: %c\n", BiTreeEmpty(trees[I]) == true ? 'T' : 'F');
                     break;
                   case 6:
-                    printf("æ ‘çš„æ·±åº¦: %d\n", BiTreeDepth(trees[I]));
+                    printf("Ê÷µÄÉî¶È: %d\n", BiTreeDepth(trees[I]));
                     break;
                   case 7:
                     _PrintNode(Root(trees[I]));
                     break;
                   case 9:
-                    printf("è¾“å…¥èŠ‚ç‚¹çš„index:");
+                    printf("ÊäÈë½ÚµãµÄindex:");
                     if (scanf("%lu", &index) != 0) {
-                      printf("è¾“å…¥èŠ‚ç‚¹çš„indexå’Œvalue:");
+                      printf("ÊäÈë½ÚµãµÄindexºÍvalue:");
                       size_t newIndex;
                       char value;
                       if (scanf("%lu %c", &newIndex, &value) != 0) {
                         ElemType elem = {value, newIndex, false};
                         Assign(trees[I], index, elem);
-                        printf("æ“ä½œæˆåŠŸ!\n");
+                        printf("²Ù×÷³É¹¦!\n");
                         break;
                       }
                     }
                   case 8:
-                    printf("è¾“å…¥èŠ‚ç‚¹çš„index:");
+                    printf("ÊäÈë½ÚµãµÄindex:");
                     if (scanf("%lu", &index) != 0) {
                       _PrintNode(_Find(trees[I], index));
                       break;
@@ -704,7 +704,7 @@ int main() {
                   case 12:
                   case 13:
                   case 14:
-                    printf("è¾“å…¥èŠ‚ç‚¹çš„index:");
+                    printf("ÊäÈë½ÚµãµÄindex:");
                     if (scanf("%lu", &index) != 0) {
                       switch (selection) {
                         case 10:
@@ -727,23 +727,23 @@ int main() {
                     }
                   case 15:
                   case 16:
-                    printf("è¾“å…¥èŠ‚ç‚¹çš„index:");
+                    printf("ÊäÈë½ÚµãµÄindex:");
                     if (scanf("%lu", &index) != 0) {
-                      printf("å·¦è¿˜æ˜¯å³ [L/R, 0/1]:");
+                      printf("×ó»¹ÊÇÓÒ [L/R, 0/1]:");
                       int LR;
                       if (scanf("%d", &LR) != 0) {
                         if (selection == 15) {
-                          printf("æ ‘cçš„id:");
+                          printf("Ê÷cµÄid:");
                           size_t c_tree;
                           if (scanf("%lu", &c_tree) != 0) {
                             InsertChild(trees[I], index, LR == 0, trees[c_tree]);
                             trees.erase(trees.begin() + c_tree);
-                            printf("æ“ä½œæˆåŠŸ!\n");
+                            printf("²Ù×÷³É¹¦!\n");
                             break;
                           }
                         } else {
                           DeleteChild(trees[I], index, LR == 0);
-                          printf("æ“ä½œæˆåŠŸ!\n");
+                          printf("²Ù×÷³É¹¦!\n");
                           break;
                         }
                       }
@@ -766,23 +766,23 @@ int main() {
               }
             }
 
-            printf("æ— æ•ˆè¾“å…¥\n");
+            printf("ÎŞĞ§ÊäÈë\n");
           }
           break;
       }
     } catch (Error e) {
       switch (e) {
         case Error::NO_SUCH_NODE:
-          printf("è¯¥èŠ‚ç‚¹ä¸å­˜åœ¨!\n");
+          printf("¸Ã½Úµã²»´æÔÚ!\n");
           break;
         case Error::WRONG_DEF:
-          printf("definitioné”™è¯¯!\n");
+          printf("definition´íÎó!\n");
           break;
         case Error::NOT_INIT:
-          printf("æœªåˆå§‹åŒ–!\n");
+          printf("Î´³õÊ¼»¯!\n");
           break;
         default:
-          printf("æœªçŸ¥é”™è¯¯!\n");
+          printf("Î´Öª´íÎó!\n");
           break;
       }
     }

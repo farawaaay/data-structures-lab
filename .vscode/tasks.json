@@ -39,7 +39,8 @@
         "-g",
         "'${workspaceFolder}/BiTree.cpp'",
         "-o",
-        "'${workspaceFolder}/build/BiTree.exe'"
+        "'${workspaceFolder}/build/BiTree.exe'",
+        "-Wall"
       ],
       "problemMatcher": []
     },
