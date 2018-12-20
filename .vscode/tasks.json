@@ -70,6 +70,20 @@
         "-Wall"
       ],
       "problemMatcher": []
+    },
+    {
+      "label": "build \"Graph\"",
+      "type": "shell",
+      "command": "g++",
+      "group": "build",
+      "args": [
+        "-g",
+        "'${workspaceFolder}/Graph.cpp'",
+        "-o",
+        "'${workspaceFolder}/build/Graph.exe'",
+        "-Wall"
+      ],
+      "problemMatcher": []
     }
   ]
 }

@@ -44,7 +44,12 @@
     "xtr1common": "cpp",
     "xtree": "cpp",
     "xutility": "cpp",
-    "functional": "cpp"
+    "functional": "cpp",
+    "deque": "cpp",
+    "list": "cpp",
+    "queue": "cpp",
+    "unordered_map": "cpp",
+    "xhash": "cpp"
   },
   "files.encoding": "gb2312"
 }
