@@ -154,7 +154,7 @@ BiTreeNode* _Find(const BiTree& T, size_t index) {
 void _PrintNode(BiTreeNode* n) {
   if (!n)
     throw Error::NO_SUCH_NODE;
-  printf("(%lu,%c)\n", n->data.index, n->data.value);
+  printf("(%llu,%c)\n", n->data.index, n->data.value);
 }
 
 BiTreeNode* Parent(const BiTree& T, size_t index) {
@@ -235,7 +235,7 @@ status InsertChild(BiTree& T, size_t index, bool LR, BiTree& c) {
   } else {
     original = self->right;
     self->right = c.root;
-    c.root->left = original;
+    c.root->right = original;
   }
 }
 
@@ -360,7 +360,7 @@ asciinode* build_ascii_tree_recursive(BiTreeNode* t) {
     node->right->parent_dir = 1;
   }
 
-  sprintf(node->label, "(%lu,%c)", t->data.index, t->data.value);
+  sprintf(node->label, "(%llu,%c)", t->data.index, t->data.value);
   node->lablen = strlen(node->label);
 
   return node;
@@ -562,7 +562,7 @@ int main() {
         case -1:
           I = 0;
           for (auto tree : trees) {
-            printf("id为%lu的树:\n", I++);
+            printf("id为%llu的树:\n", I++);
             if (!BiTreeEmpty(tree))
               print_ascii_tree(tree.root);
             else
@@ -572,7 +572,7 @@ int main() {
         case 1:
           trees.push_back(BiTree());
           InitBiTree(trees.back());
-          printf("创建成功!当前id范围:[0, %lu]\n", trees.size() - 1);
+          printf("创建成功!当前id范围:[0, %llu]\n", trees.size() - 1);
           break;
         case 21: {
           size_t tree_s = trees.size();
@@ -635,7 +635,7 @@ int main() {
         default:
           if (selection >= 2 && selection <= 20) {
             printf("输入这棵树的Id:");
-            if (scanf("%lu", &I) != 0) {
+            if (scanf("%llu", &I) != 0) {
               if (I <= trees.size() - 1) {
                 switch (selection) {
                   case 2:
@@ -653,7 +653,7 @@ int main() {
                       if (scanf("%d", &null) != 0 && (null == 0 || null == 1)) {
                         if (null == 0) {
                           printf("输入节点的index和value: ");
-                          if (scanf("%lu %c", &index, &value) != 0) {
+                          if (scanf("%llu %c", &index, &value) != 0) {
                             elems.push_back({value, index, null == 1});
                           }
                         } else {
@@ -682,11 +682,11 @@ int main() {
                     break;
                   case 9:
                     printf("输入节点的index:");
-                    if (scanf("%lu", &index) != 0) {
+                    if (scanf("%llu", &index) != 0) {
                       printf("输入节点的index和value:");
                       size_t newIndex;
                       char value;
-                      if (scanf("%lu %c", &newIndex, &value) != 0) {
+                      if (scanf("%llu %c", &newIndex, &value) != 0) {
                         ElemType elem = {value, newIndex, false};
                         Assign(trees[I], index, elem);
                         printf("操作成功!\n");
@@ -695,7 +695,7 @@ int main() {
                     }
                   case 8:
                     printf("输入节点的index:");
-                    if (scanf("%lu", &index) != 0) {
+                    if (scanf("%llu", &index) != 0) {
                       _PrintNode(_Find(trees[I], index));
                       break;
                     }
@@ -705,7 +705,7 @@ int main() {
                   case 13:
                   case 14:
                     printf("输入节点的index:");
-                    if (scanf("%lu", &index) != 0) {
+                    if (scanf("%llu", &index) != 0) {
                       switch (selection) {
                         case 10:
                           _PrintNode(Parent(trees[I], index));
@@ -728,14 +728,14 @@ int main() {
                   case 15:
                   case 16:
                     printf("输入节点的index:");
-                    if (scanf("%lu", &index) != 0) {
+                    if (scanf("%llu", &index) != 0) {
                       printf("左还是右 [L/R, 0/1]:");
                       int LR;
                       if (scanf("%d", &LR) != 0) {
                         if (selection == 15) {
                           printf("树c的id:");
                           size_t c_tree;
-                          if (scanf("%lu", &c_tree) != 0) {
+                          if (scanf("%llu", &c_tree) != 0) {
                             InsertChild(trees[I], index, LR == 0, trees[c_tree]);
                             trees.erase(trees.begin() + c_tree);
                             printf("操作成功!\n");
