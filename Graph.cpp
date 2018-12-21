@@ -61,12 +61,12 @@ status CreateGraph(Graph& G, vector<VertexType> nodes, vector<tuple<u_int, u_int
 
 status DestroyGraph(Graph& G) {
   for (auto v : G.vertices) {
-    ArcNode* head = v.arcs;
-    while (head->next != NULL) {
-      ArcNode* next = head->next;
-      delete head->info;
-      delete head;
-      head = next;
+    ArcNode* arc = v.arcs;
+    while (arc != NULL) {
+      ArcNode* next = arc->next;
+      delete arc->info;
+      delete arc;
+      arc = next;
     }
   }
   G.vertices.clear();
@@ -335,36 +335,47 @@ int main() {
               if (G.size() != 0 && I <= G.size() - 1) {
                 switch (selection) {
                   case 1: {
-                    u_int index, v, w;
-                    char value;
-                    vector<VertexType> vex = {};
-                    vector<tuple<u_int, u_int, int*>> arc = {};
-                    printf("输入节点的index和value:\n");
-                    while (scanf("%u %c", &index, &value) > 0)
-                      vex.push_back({index, value});
-                    printf("输入边的v w:\n");
-                    while (scanf("%u %u", &v, &w) > 0)
-                      arc.push_back({v, w, NULL});
-                    printf("输入上述边的info:\n");
-                    for (size_t i = 0; i < arc.size(); i++)
-                      scanf("%d", get<2>(arc[i]));
-
+                    // u_int index, v, w;
+                    // char value;
+                    // vector<VertexType> vex = {};
+                    // vector<tuple<u_int, u_int, int*>> arc = {};
+                    // printf("输入节点的index和value:\n");
+                    // while (scanf("%u %c", &index, &value) > 0)
+                    //   vex.push_back({index, value});
+                    // printf("输入边的v w:\n");
+                    // while (scanf("%u %u", &v, &w) > 0)
+                    //   arc.push_back({v, w, NULL});
+                    // printf("输入上述边的info:\n");
+                    // for (size_t i = 0; i < arc.size(); i++)
+                    //   scanf("%d", get<2>(arc[i]));
                     // CreateGraph(G[I], vex, arc);
-                    // CreateGraph(G[I],
-                    //             {
-                    //                 {1, 'a'},
-                    //                 {2, 'b'},
-                    //                 {3, 'c'},
-                    //                 {4, 'd'},
-                    //             },
-                    //             {
-                    //                 {1, 2, NULL},
-                    //                 {1, 4, NULL},
-                    //                 {3, 2, NULL},
-                    //                 {4, 2, NULL},
-                    //                 {3, 1, NULL},
-                    //                 {4, 3, NULL},
-                    //             });
+
+                    CreateGraph(G[I],
+                                {
+                                    {1, 'a'},
+                                    {2, 'b'},
+                                    {3, 'c'},
+                                    {4, 'd'},
+                                    {5, 'e'},
+                                    {6, 'f'},
+                                    {7, 'g'},
+                                    {8, 'h'},
+                                },
+                                {
+                                    {1, 2, NULL},
+                                    {1, 4, NULL},
+                                    {3, 2, NULL},
+                                    {4, 2, NULL},
+                                    {5, 1, NULL},
+                                    {5, 6, NULL},
+                                    {8, 1, NULL},
+                                    {7, 1, NULL},
+                                    {4, 1, NULL},
+                                    {7, 5, NULL},
+                                    {3, 6, NULL},
+                                    {3, 5, NULL},
+                                    {4, 3, NULL},
+                                });
                     printf("创建成功!");
                     break;
                   }
@@ -372,6 +383,7 @@ int main() {
                     DestroyGraph(G[I]);
                     G.erase(G.begin() + I);
                     printf("销毁成功!\n");
+                    break;
                   }
                   case 8: {
                     VertexType v;
