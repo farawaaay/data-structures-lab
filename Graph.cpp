@@ -210,7 +210,7 @@ int main() {
   while (selection != 0) {
     system("cls");
     printf("\n");
-    printf("   Menu for Linear Table On Sequence Structure  \n");
+    printf("    Graph With Adjacency List Representation    \n");
     printf("------------------------------------------------\n");
     printf("      1.CreateGraph       10.InsertArc          \n");
     printf("      2.DestroyGraph      11.DeleteArc          \n");

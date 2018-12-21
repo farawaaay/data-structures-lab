@@ -538,7 +538,7 @@ int main() {
   while (selection != 0) {
     system("cls");
     printf("\n");
-    printf("   Menu for Linear Table On Sequence Structure  \n");
+    printf("  BiTree With Binary Linked List Representation \n");
     printf("------------------------------------------------\n");
     printf("      1.InitBiTree       11.LeftChild           \n");
     printf("      2.DestroyBiTree    12.RightChild          \n");
