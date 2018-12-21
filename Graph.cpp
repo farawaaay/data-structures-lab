@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <functional>
+#include <list>
 #include <tuple>
 #include <vector>
 
@@ -96,14 +97,11 @@ ArcNode* FirstAdjVex(Graph& G, u_int index) {
 }
 
 ArcNode* NextAdjVex(Graph& G, u_int v, u_int w) {
-  ArcNode* head = G.vertices[LocateVex(G, v)].arcs;
-  if (head != NULL) {
-    while (head->next != NULL) {
-      head = head->next;
-      if (head->adjvex == w) {
-        return head->next;
-      }
-    }
+  ArcNode* arc = G.vertices[LocateVex(G, v)].arcs;
+  while (arc != NULL) {
+    if (arc->adjvex == w)
+      return arc->next;
+    arc = arc->next;
   }
   return NULL;
 }
@@ -114,13 +112,12 @@ status InsertVex(Graph& G, VertexType data) {
 
 status DeleteVex(Graph& G, u_int index) {
   size_t i = LocateVex(G, index);
-  VNode vex = G.vertices[i];
-  ArcNode* head = vex.arcs;
-  while (head->next != NULL) {
-    ArcNode* next = head->next;
-    delete head->info;
-    delete head;
-    head = next;
+  ArcNode* arc = G.vertices[i].arcs;
+  while (arc != NULL) {
+    ArcNode* next = arc->next;
+    delete arc->info;
+    delete arc;
+    arc = next;
   }
   G.vertices.erase(G.vertices.begin() + i);
 }
@@ -141,15 +138,69 @@ status InsertArc(Graph& G, u_int v, u_int w, int* info) {
 }
 
 status DeleteArc(Graph& G, u_int v, u_int w) {
-  ArcNode* head = G.vertices[LocateVex(G, v)].arcs;
-  if (head != NULL) {
-    while (head->next != NULL) {
-      head = head->next;
-      if (head->adjvex == w) {
-        head->next = head->next->next;
+  VNode vex = G.vertices[LocateVex(G, v)];
+  ArcNode* __head = new ArcNode();
+  ArcNode* head = __head;
+  __head->next = vex.arcs;
+
+  while (head != NULL && head->next != NULL) {
+    if (head->next->adjvex == w) {
+      head->next = head->next->next;
+    }
+    head = head->next;
+  }
+
+  vex.arcs = __head->next;
+}
+
+status DFSTraverse(Graph& G, function<void(VNode&)> Visit) {
+  bool* visited = new bool[G.vertices.size()];
+  for (size_t i = 0; i < G.vertices.size(); i++)
+    visited[i] = false;
+
+  function<void(size_t)> DFS = [&](size_t i) -> void {
+    visited[i] = true;
+    Visit(G.vertices[i]);
+    ArcNode* arc = G.vertices[i].arcs;
+    while (arc != NULL) {
+      size_t ii = LocateVex(G, arc->adjvex);
+      if (visited[ii] == false)
+        DFS(ii);
+      arc = arc->next;
+    }
+  };
+
+  DFS(0);
+  delete[] visited;
+}
+
+status BFSTraverse(Graph& G, function<void(VNode&)> Visit) {
+  bool* visited = new bool[G.vertices.size()];
+  for (size_t i = 0; i < G.vertices.size(); i++)
+    visited[i] = false;
+
+  size_t s = 0;
+  list<size_t> queue;
+  visited[s] = true;
+  queue.push_back(s);
+
+  while (!queue.empty()) {
+    s = queue.front();
+    VNode v = G.vertices[s];
+    Visit(v);
+    queue.pop_front();
+
+    ArcNode* arc = v.arcs;
+    while (arc != NULL) {
+      size_t ii = LocateVex(G, arc->adjvex);
+      if (visited[ii] == false) {
+        visited[ii] = true;
+        queue.push_back(ii);
       }
+      arc = arc->next;
     }
   }
+  delete[] visited;
 }
 
 int main() {
@@ -184,17 +235,19 @@ int main() {
           for (auto _G : G) {
             printf("图%llu\n", I++);
             for (auto v : _G.vertices) {
-              printf("(%u,%c): ", v.data.index, v.data.value);
-              ArcNode* head = v.arcs;
-              if (head != NULL) {
-                printf("(%u,%d)", head->adjvex, head->info == NULL ? 0 : *head->info);
-                while (head->next != NULL) {
-                  ArcNode* next = head->next;
-                  printf("->(%u,%d)", next->adjvex, next->info == NULL ? 0 : *next->info);
-                  head = next;
-                }
-              } else
-                printf("NULL");
+              printf("(%u,%c)", v.data.index, v.data.value);
+              ArcNode* arc = v.arcs;
+              if (arc != NULL)
+                printf("-");
+
+              while (arc != NULL) {
+                if (arc->info == NULL)
+                  printf("-> %u ", arc->adjvex);
+                else
+                  printf("-> (%u,%d) ", arc->adjvex, *arc->info);
+
+                arc = arc->next;
+              }
               printf("\n");
             }
             printf("\n\n");
@@ -221,21 +274,14 @@ int main() {
             vector<tuple<u_int, u_int, bool, int>> arcs = {};
             for (auto vex : _G.vertices) {
               fwrite(&vex.data, sizeof(VertexType), 1, fp);
-              ArcNode* head = vex.arcs;
-              if (head != NULL) {
+              ArcNode* arc = vex.arcs;
+              while (arc != NULL) {
                 arcs.push_back({vex.data.index,
-                                head->adjvex,
-                                head->info == NULL,
-                                head->info == NULL ? 0 : *head->info});
-                while (head->next != NULL) {
-                  ArcNode* next = head->next;
-                  arcs.push_back({vex.data.index,
-                                  next->adjvex,
-                                  next->info == NULL,
-                                  next->info == NULL ? 0 : *next->info});
-                  head = next;
-                }
-              };
+                                arc->adjvex,
+                                arc->info == NULL,
+                                arc->info == NULL ? 0 : *arc->info});
+                arc = arc->next;
+              }
             }
             s = arcs.size();
             fwrite(&s, sizeof(size_t), 1, fp);
@@ -289,36 +335,36 @@ int main() {
               if (G.size() != 0 && I <= G.size() - 1) {
                 switch (selection) {
                   case 1: {
-                    // u_int index, v, w;
-                    // char value;
-                    // vector<VertexType> vex = {};
-                    // vector<tuple<u_int, u_int, int*>> arc = {};
-                    // printf("输入节点的index和value:\n");
-                    // while (scanf("%u %c", &index, &value) > 0)
-                    //   vex.push_back({index, value});
-                    // printf("输入边的v w:\n");
-                    // while (scanf("%u %u", &v, &w) > 0)
-                    //   arc.push_back({v, w, NULL});
-                    // printf("输入上述边的info:\n");
-                    // for (size_t i = 0; i < arc.size(); i++)
-                    //   scanf("%d", get<2>(arc[i]));
+                    u_int index, v, w;
+                    char value;
+                    vector<VertexType> vex = {};
+                    vector<tuple<u_int, u_int, int*>> arc = {};
+                    printf("输入节点的index和value:\n");
+                    while (scanf("%u %c", &index, &value) > 0)
+                      vex.push_back({index, value});
+                    printf("输入边的v w:\n");
+                    while (scanf("%u %u", &v, &w) > 0)
+                      arc.push_back({v, w, NULL});
+                    printf("输入上述边的info:\n");
+                    for (size_t i = 0; i < arc.size(); i++)
+                      scanf("%d", get<2>(arc[i]));
 
                     // CreateGraph(G[I], vex, arc);
-                    CreateGraph(G[I],
-                                {
-                                    {1, 'a'},
-                                    {2, 'b'},
-                                    {3, 'c'},
-                                    {4, 'd'},
-                                },
-                                {
-                                    {1, 2, NULL},
-                                    {1, 4, NULL},
-                                    {3, 2, NULL},
-                                    {4, 2, NULL},
-                                    {3, 1, NULL},
-                                    {4, 3, NULL},
-                                });
+                    // CreateGraph(G[I],
+                    //             {
+                    //                 {1, 'a'},
+                    //                 {2, 'b'},
+                    //                 {3, 'c'},
+                    //                 {4, 'd'},
+                    //             },
+                    //             {
+                    //                 {1, 2, NULL},
+                    //                 {1, 4, NULL},
+                    //                 {3, 2, NULL},
+                    //                 {4, 2, NULL},
+                    //                 {3, 1, NULL},
+                    //                 {4, 3, NULL},
+                    //             });
                     printf("创建成功!");
                     break;
                   }
@@ -333,6 +379,7 @@ int main() {
                     if (scanf("%u %c", &v.index, &v.value)) {
                       InsertVex(G[I], v);
                     }
+                    printf("插入成功!\n");
                     break;
                   }
                   case 3:
@@ -361,7 +408,7 @@ int main() {
                         printf("(%u,%c)\n", v.index, v.value);
                         break;
                       case 5:
-                        printf("输入新的index和value:\n");
+                        printf("输入新的index和value:");
                         if (scanf("%u %c", &v.index, &v.value)) {
                           PutVex(G[I], index, v);
                         }
@@ -378,7 +425,7 @@ int main() {
                           printf("(%u,%u,%d)\n", index, pArc->adjvex, *pArc->info);
                         break;
                       case 7:
-                        printf("输入w:\n");
+                        printf("输入w:");
                         if (scanf("%u", &w)) {
                           pArc = NextAdjVex(G[I], index, w);
                           if (pArc == NULL) {
@@ -396,22 +443,36 @@ int main() {
                         printf("删除成功!\n");
                         break;
                       case 10:
-                        printf("输入w:\n");
+                        printf("输入w:");
                         if (scanf("%u", &w)) {
                           int* info = new int();
                           printf("输入info:\n");
                           if (scanf("%d", info))
                             InsertArc(G[I], index, w, info);
+                          else
+                            InsertArc(G[I], index, w, NULL);
                         }
                         break;
                       case 11:
-                        printf("输入w:\n");
+                        printf("输入w:");
                         if (scanf("%u", &w)) {
                           DeleteArc(G[I], index, w);
                         }
                         break;
                     }
+                    break;
                   }
+                  case 12:
+                    DFSTraverse(G[I], [](VNode& v) -> void {
+                      printf("(%u,%c)\n", v.data.index, v.data.value);
+                    });
+                    break;
+
+                  case 13:
+                    BFSTraverse(G[I], [](VNode& v) -> void {
+                      printf("(%u,%c)\n", v.data.index, v.data.value);
+                    });
+                    break;
                 }
                 break;
               }
