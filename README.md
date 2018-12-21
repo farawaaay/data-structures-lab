@@ -12,6 +12,8 @@ Code of fake data structures lab in HUST.
 2. [基于链式存储结构的线性表 | Linear Table On Linked Structure](./List2.cpp)
 3. [基于二叉链表的二叉树 | BiTree With Binary Linked List Representation](./BiTree.cpp)
 4. [基于邻接表的图 | Graph With Adjacency List Representation](./Graph.cpp)
+5. [实验报告 PDF | Lab Report & Summary PDF](./report/数据结构实验报告.pdf)
+6. [实验报告 DOCX | Lab Report & Summary DOCX](./report/数据结构实验报告.docx)
 
 ## 如何使用 | Usage
 
