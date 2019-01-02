@@ -11,6 +11,8 @@ using status = void;
 enum Error {
   NO_SUCH_VEX,
   NO_ADJ_VEX,
+  VEX_EXISTS,
+  ADJ_VEX_EXISTS,
 };
 
 struct VertexType {
@@ -50,6 +52,7 @@ status DFSTraverse(Graph& G, function<void(VNode&)> Visit);
 status BFSTraverse(Graph& G, function<void(VNode&)> Visit);
 
 status CreateGraph(Graph& G, vector<VertexType> nodes, vector<tuple<u_int, u_int, int*>> arcs) {
+  DestroyGraph(G);
   G.arcNum = arcs.size();
   G.vexNum = nodes.size();
   G.vertices = {};
@@ -107,17 +110,26 @@ ArcNode* NextAdjVex(Graph& G, u_int v, u_int w) {
 }
 
 status InsertVex(Graph& G, VertexType data) {
+  for (auto v : G.vertices) {
+    if (v.data.index == data.index) {
+      throw VEX_EXISTS;
+    }
+  }
   G.vertices.push_back({data, NULL});
 }
 
 status DeleteVex(Graph& G, u_int index) {
   size_t i = LocateVex(G, index);
-  ArcNode* arc = G.vertices[i].arcs;
-  while (arc != NULL) {
-    ArcNode* next = arc->next;
-    delete arc->info;
-    delete arc;
-    arc = next;
+
+  for (auto v : G.vertices) {
+    try {
+      DeleteArc(G, index, v.data.index);
+    } catch (Error e) {
+    }
+    try {
+      DeleteArc(G, v.data.index, index);
+    } catch (Error e) {
+    }
   }
   G.vertices.erase(G.vertices.begin() + i);
 }
@@ -125,6 +137,13 @@ status DeleteVex(Graph& G, u_int index) {
 status InsertArc(Graph& G, u_int v, u_int w, int* info) {
   size_t i = LocateVex(G, v);
   ArcNode* head = G.vertices[i].arcs;
+  ArcNode* arc = head;
+  while (arc != NULL) {
+    if (arc->adjvex == w) {
+      throw ADJ_VEX_EXISTS;
+    }
+    arc = arc->next;
+  }
   if (head == NULL) {
     G.vertices[i].arcs = head = new ArcNode();
   } else {
@@ -138,19 +157,24 @@ status InsertArc(Graph& G, u_int v, u_int w, int* info) {
 }
 
 status DeleteArc(Graph& G, u_int v, u_int w) {
-  VNode vex = G.vertices[LocateVex(G, v)];
+  VNode& vex = G.vertices[LocateVex(G, v)];
   ArcNode* __head = new ArcNode();
   ArcNode* head = __head;
   __head->next = vex.arcs;
 
+  bool deleted = false;
   while (head != NULL && head->next != NULL) {
     if (head->next->adjvex == w) {
       head->next = head->next->next;
+      deleted = true;
     }
     head = head->next;
   }
 
   vex.arcs = __head->next;
+  if (!deleted) {
+    throw Error::NO_ADJ_VEX;
+  }
 }
 
 status DFSTraverse(Graph& G, function<void(VNode&)> Visit) {
@@ -208,7 +232,7 @@ int main() {
   size_t I = -1;
   vector<Graph> G = {};
   while (selection != 0) {
-    system("cls");
+    system("clear");
     printf("\n");
     printf("    Graph With Adjacency List Representation    \n");
     printf("------------------------------------------------\n");
@@ -233,7 +257,7 @@ int main() {
         case -1:
           I = 0;
           for (auto _G : G) {
-            printf("图%llu\n", I++);
+            printf("图%lu\n", I++);
             for (auto v : _G.vertices) {
               printf("(%u,%c)", v.data.index, v.data.value);
               ArcNode* arc = v.arcs;
@@ -258,7 +282,7 @@ int main() {
           break;
         case 14:
           G.push_back(Graph());
-          printf("创建成功!当前id范围:[0, %llu]\n", G.size() - 1);
+          printf("创建成功!当前id范围:[0, %lu]\n", G.size() - 1);
           break;
         case 15: {
           size_t s = G.size();
@@ -331,51 +355,44 @@ int main() {
         default:
           if (selection >= 1 && selection <= 13) {
             printf("输入图的Id:");
-            if (scanf("%llu", &I) != 0) {
+            if (scanf("%lu", &I) != 0) {
               if (G.size() != 0 && I <= G.size() - 1) {
                 switch (selection) {
                   case 1: {
-                    // u_int index, v, w;
-                    // char value;
-                    // vector<VertexType> vex = {};
-                    // vector<tuple<u_int, u_int, int*>> arc = {};
-                    // printf("输入节点的index和value:\n");
-                    // while (scanf("%u %c", &index, &value) > 0)
-                    //   vex.push_back({index, value});
-                    // printf("输入边的v w:\n");
-                    // while (scanf("%u %u", &v, &w) > 0)
-                    //   arc.push_back({v, w, NULL});
-                    // printf("输入上述边的info:\n");
-                    // for (size_t i = 0; i < arc.size(); i++)
-                    //   scanf("%d", get<2>(arc[i]));
-                    // CreateGraph(G[I], vex, arc);
+                    u_int index, v, w;
+                    char value;
+                    vector<VertexType> vex = {};
+                    vector<tuple<u_int, u_int, int*>> arc = {};
+                    printf("输入节点的index和value:\n");
+                    while (scanf("%u %c", &index, &value) > 0)
+                      vex.push_back({index, value});
+                    printf("输入边的v w:\n");
+                    while (scanf("%u %u", &v, &w) > 0)
+                      arc.push_back({v, w, NULL});
+                    printf("输入上述边的info:\n");
+                    for (size_t i = 0; i < arc.size(); i++)
+                      scanf("%d", get<2>(arc[i]));
+                    CreateGraph(G[I], vex, arc);
 
-                    CreateGraph(G[I],
-                                {
-                                    {1, 'a'},
-                                    {2, 'b'},
-                                    {3, 'c'},
-                                    {4, 'd'},
-                                    {5, 'e'},
-                                    {6, 'f'},
-                                    {7, 'g'},
-                                    {8, 'h'},
-                                },
-                                {
-                                    {1, 2, NULL},
-                                    {1, 4, NULL},
-                                    {3, 2, NULL},
-                                    {4, 2, NULL},
-                                    {5, 1, NULL},
-                                    {5, 6, NULL},
-                                    {8, 1, NULL},
-                                    {7, 1, NULL},
-                                    {4, 1, NULL},
-                                    {7, 5, NULL},
-                                    {3, 6, NULL},
-                                    {3, 5, NULL},
-                                    {4, 3, NULL},
-                                });
+                    // CreateGraph(G[I],
+                    //             {
+                    //                 {1, 'a'},
+                    //                 {2, 'b'},
+                    //                 {3, 'c'},
+                    //                 {4, 'd'},
+                    //                 {5, 'e'},
+                    //                 {6, 'f'},
+                    //                 {7, 'g'},
+                    //             },
+                    //             {
+                    //                 {1, 2, NULL},
+                    //                 {1, 3, NULL},
+                    //                 {2, 3, NULL},
+                    //                 {2, 5, NULL},
+                    //                 {3, 4, NULL},
+                    //                 {5, 4, NULL},
+                    //                 {6, 7, NULL},
+                    //             });
                     printf("创建成功!");
                     break;
                   }
@@ -413,7 +430,7 @@ int main() {
                     }
                     switch (selection) {
                       case 3:
-                        printf("该顶点在数组中的索引: %llu\n", LocateVex(G[I], index));
+                        printf("该顶点在数组中的索引: %lu\n", LocateVex(G[I], index));
                         break;
                       case 4:
                         v = GetVex(G[I], index);
@@ -463,12 +480,14 @@ int main() {
                             InsertArc(G[I], index, w, info);
                           else
                             InsertArc(G[I], index, w, NULL);
+                          printf("插入成功!\n");
                         }
                         break;
                       case 11:
                         printf("输入w:");
                         if (scanf("%u", &w)) {
                           DeleteArc(G[I], index, w);
+                          printf("删除成功!\n");
                         }
                         break;
                     }
@@ -494,6 +513,20 @@ int main() {
           break;
       }
     } catch (Error e) {
+      switch (e) {
+        case Error::NO_SUCH_VEX:
+          printf("未找到该节点!\n");
+          break;
+        case Error::NO_ADJ_VEX:
+          printf("未找到该边!\n");
+          break;
+        case Error::ADJ_VEX_EXISTS:
+          printf("边存在!\n");
+          break;
+        case Error::VEX_EXISTS:
+          printf("顶点存在!\n");
+          break;
+      }
     }
 
     getchar();
